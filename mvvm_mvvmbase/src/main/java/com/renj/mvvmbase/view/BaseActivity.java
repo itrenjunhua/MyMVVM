@@ -4,12 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import android.support.annotation.*;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -19,7 +14,6 @@ import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
 import com.renj.utils.common.ActivityManager;
@@ -27,7 +21,6 @@ import com.renj.utils.common.UIUtils;
 import com.renj.utils.common.ViewUtils;
 import com.renj.utils.res.ResUtils;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
-
 import me.yokeyword.fragmentation.SupportActivity;
 
 /**
@@ -478,23 +471,23 @@ public abstract class BaseActivity extends SupportActivity implements IBaseView,
     }
 
     @Override
-    public <E> void showContentPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, @NonNull E e) {
+    public <E> void showContentPage(@LoadingStyle int loadingStyle, @NonNull E e) {
     }
 
     @Override
-    public void showLoadingPage(@LoadingStyle int loadingStyle, @IntRange int requestCode) {
+    public void showLoadingPage(@LoadingStyle int loadingStyle) {
     }
 
     @Override
-    public <E> void showEmptyDataPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, @NonNull E e) {
+    public <E> void showEmptyDataPage(@LoadingStyle int loadingStyle, @NonNull E e) {
     }
 
     @Override
-    public void showNetWorkErrorPage(@LoadingStyle int loadingStyle, @IntRange int requestCode) {
+    public void showNetWorkErrorPage(@LoadingStyle int loadingStyle) {
     }
 
     @Override
-    public void showErrorPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, Throwable e) {
+    public void showErrorPage(@LoadingStyle int loadingStyle, Throwable e) {
     }
 
     @Override

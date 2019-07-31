@@ -29,7 +29,10 @@ dependencies {
     // Fragment 处理框架
     api rootProject.ext.dependencies["fragmentation"]
     // ARouter 路由
-    api rootProject.ext.dependencies["arouterApi"]
+    api(rootProject.ext.dependencies["arouterApi"]){
+        // 对support-v4包的应用并不影响项目，避免版本不一样的问题
+        exclude group: "com.android.support", module: "support-v4"
+    }
     // 常用工具库
     api project(':lib_android_utils')
     // 加载对话框框架

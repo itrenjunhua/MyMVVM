@@ -2,14 +2,12 @@ package com.renj.mvvmbase.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
 import com.renj.utils.common.UIUtils;
@@ -92,23 +90,23 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     }
 
     @Override
-    public <E> void showContentPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, @NonNull E e) {
+    public <E> void showContentPage(@LoadingStyle int loadingStyle, @NonNull E e) {
     }
 
     @Override
-    public void showLoadingPage(@LoadingStyle int loadingStyle, @IntRange int requestCode) {
+    public void showLoadingPage(@LoadingStyle int loadingStyle) {
     }
 
     @Override
-    public <E> void showEmptyDataPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, @NonNull E e) {
+    public <E> void showEmptyDataPage(@LoadingStyle int loadingStyle, @NonNull E e) {
     }
 
     @Override
-    public void showNetWorkErrorPage(@LoadingStyle int loadingStyle, @IntRange int requestCode) {
+    public void showNetWorkErrorPage(@LoadingStyle int loadingStyle) {
     }
 
     @Override
-    public void showErrorPage(@LoadingStyle int loadingStyle, @IntRange int requestCode, Throwable e) {
+    public void showErrorPage(@LoadingStyle int loadingStyle, Throwable e) {
     }
 
     @Override
