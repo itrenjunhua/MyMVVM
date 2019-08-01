@@ -25,9 +25,9 @@ import java.util.Map;
 public class ModelManager {
     private final static ModelManager INSTANCE = new ModelManager();
     // 保存实例
-    private static Map<Class, IMvpHttpHelper> iHttpHelperMap = new HashMap<>();
-    private static Map<Class, IMvpDBHelper> idbHelperMap = new HashMap<>();
-    private static Map<Class, IMvpFileHelper> iFileHelperMap = new HashMap<>();
+    private static Map<Class, IMVVMHttpHelper> iHttpHelperMap = new HashMap<>();
+    private static Map<Class, IMVVMDBHelper> idbHelperMap = new HashMap<>();
+    private static Map<Class, IMVVMFileHelper> iFileHelperMap = new HashMap<>();
 
     private ModelManager() {
     }
@@ -42,10 +42,10 @@ public class ModelManager {
      * 增加 网络请求接口实现类 实例
      *
      * @param httpHelper
-     * @param <T>        T extends {@link IMvpHttpHelper}
+     * @param <T>        T extends {@link IMVVMHttpHelper}
      * @return
      */
-    public <T extends IMvpHttpHelper> ModelManager addHttpHelper(@NonNull T httpHelper) {
+    public <T extends IMVVMHttpHelper> ModelManager addHttpHelper(@NonNull T httpHelper) {
         if (CheckUtils.isNull(httpHelper)) {
             throw new NullPointerException("参数 httpHelper 不能为 null");
         }
@@ -54,13 +54,13 @@ public class ModelManager {
     }
 
     /**
-     * 获取实例，但是该实例是通过 {@link #addHttpHelper(IMvpHttpHelper)} 方法增加过的，否则返回 {@code null}
+     * 获取实例，但是该实例是通过 {@link #addHttpHelper(IMVVMHttpHelper)} 方法增加过的，否则返回 {@code null}
      *
      * @param tClass
-     * @param <T>    T extends {@link IMvpHttpHelper}
+     * @param <T>    T extends {@link IMVVMHttpHelper}
      * @return
      */
-    public <T extends IMvpHttpHelper> T getHttpHelper(Class<T> tClass) {
+    public <T extends IMVVMHttpHelper> T getHttpHelper(Class<T> tClass) {
         return (T) iHttpHelperMap.get(tClass);
     }
 
@@ -70,10 +70,10 @@ public class ModelManager {
      * 增加 数据库操作实现类 实例
      *
      * @param dbHelper
-     * @param <T>      T extends {@link IMvpDBHelper}
+     * @param <T>      T extends {@link IMVVMDBHelper}
      * @return
      */
-    public <T extends IMvpDBHelper> ModelManager addDBHelper(@NonNull T dbHelper) {
+    public <T extends IMVVMDBHelper> ModelManager addDBHelper(@NonNull T dbHelper) {
         if (CheckUtils.isNull(dbHelper)) {
             throw new NullPointerException("参数 dbHelper 不能为 null");
         }
@@ -82,13 +82,13 @@ public class ModelManager {
     }
 
     /**
-     * 获取实例，但是该实例是通过 {@link #addDBHelper(IMvpDBHelper)} 方法增加过的，否则返回 {@code null}
+     * 获取实例，但是该实例是通过 {@link #addDBHelper(IMVVMDBHelper)} 方法增加过的，否则返回 {@code null}
      *
      * @param tClass
-     * @param <T>    T extends {@link IMvpDBHelper}
+     * @param <T>    T extends {@link IMVVMDBHelper}
      * @return
      */
-    public <T extends IMvpDBHelper> T getDBHelper(Class<T> tClass) {
+    public <T extends IMVVMDBHelper> T getDBHelper(Class<T> tClass) {
         return (T) idbHelperMap.get(tClass);
     }
 
@@ -98,10 +98,10 @@ public class ModelManager {
      * 增加 文件操作实现类 实例
      *
      * @param fileHelper
-     * @param <T>        T extends {@link IMvpFileHelper}
+     * @param <T>        T extends {@link IMVVMFileHelper}
      * @return
      */
-    public <T extends IMvpFileHelper> ModelManager addFileHelper(@NonNull T fileHelper) {
+    public <T extends IMVVMFileHelper> ModelManager addFileHelper(@NonNull T fileHelper) {
         if (CheckUtils.isNull(fileHelper)) {
             throw new NullPointerException("参数 fileHelper 不能为 null");
         }
@@ -110,13 +110,13 @@ public class ModelManager {
     }
 
     /**
-     * 获取实例，但是该实例是通过 {@link #addFileHelper(IMvpFileHelper)} 方法增加过的，否则返回 {@code null}
+     * 获取实例，但是该实例是通过 {@link #addFileHelper(IMVVMFileHelper)} 方法增加过的，否则返回 {@code null}
      *
      * @param tClass
-     * @param <T>    T extends {@link IMvpFileHelper}
+     * @param <T>    T extends {@link IMVVMFileHelper}
      * @return
      */
-    public <T extends IMvpFileHelper> T getFileHelper(Class<T> tClass) {
+    public <T extends IMVVMFileHelper> T getFileHelper(Class<T> tClass) {
         return (T) iFileHelperMap.get(tClass);
     }
 

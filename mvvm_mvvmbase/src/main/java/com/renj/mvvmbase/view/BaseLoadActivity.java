@@ -1,17 +1,15 @@
 package com.renj.mvvmbase.view;
 
+import android.arch.lifecycle.Observer;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import com.renj.mvvmbase.presenter.BasePresenter;
+import com.renj.mvvmbase.viewmodel.BaseLoadViewModel;
 import com.renj.pagestatuscontroller.IRPageStatusController;
 import com.renj.pagestatuscontroller.RPageStatusController;
 import com.renj.pagestatuscontroller.annotation.RPageStatus;
 import com.renj.pagestatuscontroller.listener.OnRPageEventListener;
-import com.renj.utils.common.Logger;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 
 /**
@@ -20,46 +18,39 @@ import java.lang.reflect.Type;
  * <p>
  * 创建时间：2017-05-12   10:22
  * <p>
- * 描述：需要访问网络的Fragment的基类，同时也是{@link BaseFragment}的子类<br/>
+ * 描述：需要访问网络的Activity的基类，同时也是{@link BaseActivity}的子类<br/>
  * 如果定义了泛型参数，那么就会将该泛型的Presenter初始化出来，子类直接使用即可。参数名：<code>mPresenter</code>
  * <p>
  * 修订历史：
  * <p>
  * ======================================================================
  */
-public abstract class BasePresenterFragment<T extends BasePresenter> extends BaseFragment {
-    private final String TAG_INFO = "BasePresenterFragment 创建 T extends BasePresenter 失败 => ";
-
-    private Class<T> mClazz;
-    protected T mPresenter;
+public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends BaseLoadViewModel> extends BaseActivity<VD,VM> {
     protected RPageStatusController rPageStatusController;
 
     @Override
     protected void initPresenter() {
-        // 通过反射获取泛型的Class
-        Type genericSuperclass = getClass().getGenericSuperclass();
-        if (genericSuperclass instanceof ParameterizedType) {
-            try {
-                mClazz = (Class<T>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
-                mPresenter = mClazz.newInstance();
-                if (null != mPresenter)
-                    mPresenter.attachView(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Logger.e(TAG_INFO + e);
-            }
-        }
+
     }
 
     /**
-     * 在{@link BasePresenterFragment}中重写，初始化页面控制器
+     * 在{@link BaseLoadActivity}中重写，初始化页面控制器
      *
      * @param view
      * @return
      */
     @Override
-    protected View initRPageStatusController(View view) {
+    protected void initRPageStatusController(View view) {
         rPageStatusController = RPageStatusController.get();
+        rPageStatusController.bind(view);
+        if (viewModel != null) {
+            viewModel.pageStatus.observeForever(new Observer<Integer>() {
+                @Override
+                public void onChanged(@Nullable Integer integer) {
+                    // TODO 根据值调用显示不同状态的方法
+                }
+            });
+        }
         rPageStatusController.resetOnRPageEventListener(RPageStatus.ERROR, new OnRPageEventListener() {
             @Override
             public void onViewClick(@NonNull IRPageStatusController iRPageStatusController, int pageStatus, @NonNull Object object, @NonNull View view, int viewId) {
@@ -81,7 +72,6 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
                 handlerPageLoadException(iRPageStatusController, pageStatus, object, view, viewId);
             }
         });
-        return rPageStatusController.bind(this, view);
     }
 
     /**
@@ -135,7 +125,7 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
         } else if (loadingStyle == LoadingStyle.LOADING_PAGE) {
             changePageStatus(RPageStatus.CONTENT);
         } else {
-            showCustomResultPage(RPageStatus.CONTENT, loadingStyle,  e);
+            showCustomResultPage(RPageStatus.CONTENT, loadingStyle, e);
         }
     }
 
@@ -157,7 +147,7 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
         } else if (loadingStyle == LoadingStyle.LOADING_PAGE) {
             changePageStatus(RPageStatus.EMPTY);
         } else {
-            showCustomResultPage(RPageStatus.EMPTY, loadingStyle,  e);
+            showCustomResultPage(RPageStatus.EMPTY, loadingStyle, e);
         }
     }
 
@@ -168,7 +158,7 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
         } else if (loadingStyle == LoadingStyle.LOADING_PAGE) {
             changePageStatus(RPageStatus.NET_WORK);
         } else {
-            showCustomResultPage(RPageStatus.NET_WORK, loadingStyle,  null);
+            showCustomResultPage(RPageStatus.NET_WORK, loadingStyle, null);
         }
     }
 
@@ -179,7 +169,7 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
         } else if (loadingStyle == LoadingStyle.LOADING_PAGE) {
             changePageStatus(RPageStatus.ERROR);
         } else {
-            showCustomResultPage(RPageStatus.ERROR, loadingStyle,  e);
+            showCustomResultPage(RPageStatus.ERROR, loadingStyle, e);
         }
     }
 
@@ -189,9 +179,7 @@ public abstract class BasePresenterFragment<T extends BasePresenter> extends Bas
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
-        if (null != mPresenter)
-            mPresenter.detachView();
     }
 }

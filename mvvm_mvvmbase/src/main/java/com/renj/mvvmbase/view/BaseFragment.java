@@ -1,6 +1,8 @@
 package com.renj.mvvmbase.view;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
+import com.renj.mvvmbase.viewmodel.BaseViewModel;
 import com.renj.utils.common.UIUtils;
 import com.renj.utils.res.ResUtils;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
@@ -26,14 +29,15 @@ import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * 如果一个新的Fragment不需要访问网络，那么就直接继承{@link BaseFragment}<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * 如果一个新的Fragment需要访问防落，那么可以继承{@link BasePresenterFragment}
+ * 如果一个新的Fragment需要访问防落，那么可以继承{@link BaseLoadFragment}
  * <p>
  * 修订历史：
  * <p>
  * ======================================================================
  */
-public abstract class BaseFragment extends Fragment implements IBaseView, View.OnClickListener {
-
+public abstract class BaseFragment<VD extends ViewDataBinding, VM extends BaseViewModel> extends Fragment implements IBaseView, View.OnClickListener {
+    protected VD viewDataBinding;
+    protected VM viewModel;
 
     @Override
     public void onAttach(Context context) {
@@ -43,13 +47,21 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(getLayoutId(), null);
-        View contentView = initRPageStatusController(view);
+        viewDataBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
+        View contentView = initRPageStatusController(viewDataBinding.getRoot());
         // 注册 ARouter 路由
         ARouter.getInstance().inject(this);
+        viewModel = createAndBindViewModel(viewDataBinding);
         initPresenter();
         return contentView;
     }
+
+    /**
+     * 创建 ViewModel，并且给 ViewDataBinding 设置 ViewModel
+     *
+     * @param viewDataBinding ViewDataBinding
+     */
+    protected abstract VM createAndBindViewModel(VD viewDataBinding);
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -58,7 +70,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     }
 
     /**
-     * 在{@link BasePresenterFragment}中重写，初始化页面控制器
+     * 在{@link BaseLoadFragment}中重写，初始化页面控制器
      *
      * @param view
      * @return
@@ -68,7 +80,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     }
 
     /**
-     * 初始化Presenter，在{@link BasePresenterFragment}中重写
+     * 初始化Presenter，在{@link BaseLoadFragment}中重写
      */
     protected void initPresenter() {
 

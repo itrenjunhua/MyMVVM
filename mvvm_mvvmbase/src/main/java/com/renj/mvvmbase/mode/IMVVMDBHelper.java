@@ -7,11 +7,11 @@ package com.renj.mvvmbase.mode;
  * <p>
  * 创建时间：2018-03-20   10:44
  * <p>
- * 描述：Mvp模式定义的标记类
+ * 描述：MVVM模式定义的标记类
  * <p>
  * 修订历史：
  * <p>
  * ======================================================================
  */
-public interface IMvpDBHelper {
+public interface IMVVMDBHelper {
 }

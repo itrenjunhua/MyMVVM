@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
  * <p>
  * 创建时间：2017-09-29   16:39
  * <p>
- * 描述：MVP模式中View顶层接口
+ * 描述：MVVM模式中View顶层接口
  * <p>
  * 修订历史：
  * <p>

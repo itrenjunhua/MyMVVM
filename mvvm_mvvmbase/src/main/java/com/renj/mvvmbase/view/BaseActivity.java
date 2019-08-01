@@ -3,6 +3,8 @@ package com.renj.mvvmbase.view;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.*;
 import android.text.TextUtils;
@@ -13,9 +15,11 @@ import android.view.View;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
+import com.renj.mvvmbase.viewmodel.BaseViewModel;
 import com.renj.utils.common.ActivityManager;
 import com.renj.utils.common.UIUtils;
 import com.renj.utils.common.ViewUtils;
@@ -33,15 +37,18 @@ import me.yokeyword.fragmentation.SupportActivity;
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  * 如果一个新的Activity不需要访问网络，那么就直接继承{@link BaseActivity}<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * 如果一个新的Activity需要访问网络，那么可以继承{@link BasePresenterActivity}
+ * 如果一个新的Activity需要访问网络，那么可以继承{@link BaseLoadActivity}
  * <p>
  * 修订历史：
  * <p>
  * ======================================================================
  */
-public abstract class BaseActivity extends SupportActivity implements IBaseView, View.OnClickListener {
+public abstract class BaseActivity<VD extends ViewDataBinding, VM extends BaseViewModel> extends SupportActivity implements IBaseView, View.OnClickListener {
     private SparseArray<View> titleViews = new SparseArray<>();
     private ViewStub viewTitleBar;
+
+    protected VD viewDataBinding;
+    protected VM viewModel;
 
 
     @Override
@@ -59,20 +66,27 @@ public abstract class BaseActivity extends SupportActivity implements IBaseView,
         super.onCreate(savedInstanceState);
         // 注册 ARouter 路由
         ARouter.getInstance().inject(this);
-        setContentView(R.layout.activity_base);
         ActivityManager.addActivity(this);
-        // 初始化基本布局ViewStub
+        setContentView(R.layout.activity_base);
+        LinearLayout llRootView = findViewById(R.id.ll_root_view);
         viewTitleBar = findViewById(R.id.view_title_bar);
-        ViewStub vsContent = findViewById(R.id.view_content);
-        vsContent.setLayoutResource(getLayoutId());
-        View contentView = vsContent.inflate();
-        initRPageStatusController(contentView);
+        viewDataBinding = DataBindingUtil.inflate(getLayoutInflater(), getLayoutId(), null, false);
+        llRootView.addView(viewDataBinding.getRoot());
+        initRPageStatusController(viewDataBinding.getRoot());
+        viewModel = createAndBindViewModel(viewDataBinding);
         initPresenter();
         initData();
     }
 
     /**
-     * 在{@link BasePresenterActivity}中重写，初始化页面控制器
+     * 创建 ViewModel，并且给 ViewDataBinding 设置 ViewModel
+     *
+     * @param viewDataBinding ViewDataBinding
+     */
+    protected abstract VM createAndBindViewModel(VD viewDataBinding);
+
+    /**
+     * 在{@link BaseLoadActivity}中重写，初始化页面控制器
      *
      * @param view
      * @return
@@ -449,7 +463,7 @@ public abstract class BaseActivity extends SupportActivity implements IBaseView,
     }
 
     /**
-     * 初始化Presenter，在{@link BasePresenterActivity}中重写
+     * 初始化Presenter，在{@link BaseLoadActivity}中重写
      */
     void initPresenter() {
 
