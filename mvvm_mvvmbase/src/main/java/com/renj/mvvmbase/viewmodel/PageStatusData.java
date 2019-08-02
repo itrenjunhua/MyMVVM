@@ -25,4 +25,15 @@ public class PageStatusData {
     public int loadingStyle;
     @Nullable
     public Object object;
+
+    public PageStatusData(@RPageStatus int pageStatus, @LoadingStyle int loadingStyle) {
+        this.pageStatus = pageStatus;
+        this.loadingStyle = loadingStyle;
+    }
+
+    public PageStatusData(@RPageStatus int pageStatus, @LoadingStyle int loadingStyle, @Nullable Object object) {
+        this.pageStatus = pageStatus;
+        this.loadingStyle = loadingStyle;
+        this.object = object;
+    }
 }

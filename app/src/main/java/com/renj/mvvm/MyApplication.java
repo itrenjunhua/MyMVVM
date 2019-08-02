@@ -1,0 +1,106 @@
+package com.renj.mvvm;
+
+import android.app.Application;
+import android.content.Context;
+import com.renj.cachelibrary.CacheManageUtils;
+import com.renj.pagestatuscontroller.RPageStatusManager;
+import com.renj.pagestatuscontroller.annotation.RPageStatus;
+import com.renj.utils.AndroidUtils;
+import com.renj.utils.common.SPUtils;
+import com.renj.utils.common.UIUtils;
+
+/**
+ * ======================================================================
+ * <p>
+ * 作者：Renj
+ * 邮箱：renjunhua@anlovek.com
+ * <p>
+ * 创建时间：2019-08-02   13:45
+ * <p>
+ * 描述：
+ * <p>
+ * 修订历史：
+ * <p>
+ * ======================================================================
+ */
+public class MyApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initApplication();
+    }
+
+    // 初始化Application
+    private void initApplication() {
+        AndroidUtils.init(this);
+        // 初始化全局的异常处理机制
+        // MyExceptionHandler.newInstance().initMyExceptionHandler(this);
+        // ANR监测
+//        if (AndroidUtils.isDebug()) {
+//            ANRWatchDog.init();
+//        }
+
+        // 初始化数据库框架
+//        initGreenDao();
+
+        // 初始化 Retrofit
+//        RetrofitUtil.newInstance()
+//                .addApiServerClass(ApiServer.class)
+//                .addInterceptor((chain) -> {
+//                    Request originalRequest = chain.request();
+//                    // 拼接 APP_TOKEN 头
+//                    Request sessionIdRequest = originalRequest.newBuilder()
+//                            .addHeader(AppConfig.APP_TOKEN_KEY, AppConfig.APP_TOKEN_VALUE)
+//                            .build();
+//                    return chain.proceed(sessionIdRequest);
+//                })
+//                .initRetrofit(this, ApiServer.BASE_URL);
+
+        // 初始化 ModelManager，注意 需要先 初始化 Retrofit
+//        ModelManager.newInstance()
+//                .addDBHelper(new DBHelper())
+//                .addFileHelper(new FileHelper())
+//                .addHttpHelper(new HttpHelper());
+
+        // 初始化SPUtils
+        SPUtils.initConfig(new SPUtils.SPConfig.Builder()
+                .spName("config_sp")
+                .spMode(Context.MODE_PRIVATE)
+                .build());
+
+        // 在子线程中初始化相关库
+        initOnNewThread();
+    }
+
+//    public static DaoSession daoSession;
+//
+//    /**
+//     * 初始化GreenDao,直接在Application中进行初始化操作
+//     */
+//    private void initGreenDao() {
+//        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, AppConfig.DATABASE_NAME);
+//        SQLiteDatabase db = helper.getWritableDatabase();
+//        DaoMaster daoMaster = new DaoMaster(db);
+//        daoSession = daoMaster.newSession();
+//    }
+//
+//    public static DaoSession getDaoSession() {
+//        return daoSession;
+//    }
+
+    private void initOnNewThread() {
+        UIUtils.runOnNewThread(() -> {
+            // 初始化图片加载库
+//            ImageLoaderUtils.init(MyApplication.this);
+            // 初始化缓存类
+            CacheManageUtils.initCacheUtil(MyApplication.this);
+            // 配置全局页面状态控制框架
+            RPageStatusManager.getInstance()
+                    .addPageStatusView(RPageStatus.LOADING, R.layout.status_view_loading)
+                    .addPageStatusView(RPageStatus.EMPTY, R.layout.status_view_empty)
+                    .addPageStatusView(RPageStatus.NET_WORK, R.layout.status_view_network, new int[]{R.id.tv_net_work, R.id.tv_reload}, false, null)
+                    .addPageStatusView(RPageStatus.ERROR, R.layout.status_view_error, R.id.tv_error, null);
+        });
+    }
+}

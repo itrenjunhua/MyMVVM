@@ -1,9 +1,9 @@
 package com.renj.mvvm
 
 import com.renj.mvvm.databinding.ActivityMainBinding
-import com.renj.mvvmbase.view.BaseActivity
+import com.renj.mvvmbase.view.BaseLoadActivity
 
-class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+class MainActivity : BaseLoadActivity<ActivityMainBinding, MainViewModel>() {
     override fun createAndBindViewModel(viewDataBinding: ActivityMainBinding?): MainViewModel {
         var mainViewModel = MainViewModel()
         viewDataBinding?.mainViewModel = mainViewModel
