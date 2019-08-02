@@ -28,12 +28,5 @@ dependencies {
     implementation rootProject.ext.dependencies["magicIndicator"]
 
     implementation project(":mvvm_mvvmbase")
-    implementation project(":lib_android_utils")
-    implementation project(":lib_android_view")
-    implementation project(":lib_loading_dialog")
-    implementation project(":lib_http")
-    implementation project(":lib_imageloader_interface")
-    implementation project(":lib_imageloader_glide")
-    implementation project(":lib_rpagestatuscontroller")
-    implementation project(":lib_android_cache")
+    implementation project(":app_lib_common")
 }

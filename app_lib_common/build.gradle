@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao' // apply plugin 放在最后的话编译时报错
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply from: '../app_module.gradle' // 引入公共配置
+
+dependencies {
+    // rxJavaPermissions https://github.com/tbruyelle/RxPermissions
+    api rootProject.ext.dependencies["rxpermissions"]
+    // banner https://github.com/youth5201314/banner
+    api rootProject.ext.dependencies["banner"]
+    // ViewPager Indicator https://github.com/itrenjunhua/MagicIndicator
+    api rootProject.ext.dependencies["magicIndicator"]
+    // greenDao https://github.com/greenrobot/greenDAO
+    api rootProject.ext.dependencies["greendao"]
+
+    // MVPBase
+    api project(':mvvm_mvvmbase')
+    api project(':mvvm_rxsupport')
+    api project(':lib_http')
+    api project(':lib_android_utils')
+    api project(':lib_android_view')
+    api project(':lib_imageloader_interface')
+    api project(':lib_imageloader_glide')
+    api project(':lib_android_cache')
+}

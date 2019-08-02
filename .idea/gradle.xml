@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app_lib_common" />
             <option value="$PROJECT_DIR$/lib_android_cache" />
             <option value="$PROJECT_DIR$/lib_android_utils" />
             <option value="$PROJECT_DIR$/lib_android_view" />
@@ -18,6 +19,7 @@
             <option value="$PROJECT_DIR$/lib_loading_dialog" />
             <option value="$PROJECT_DIR$/lib_rpagestatuscontroller" />
             <option value="$PROJECT_DIR$/mvvm_mvvmbase" />
+            <option value="$PROJECT_DIR$/mvvm_rxsupport" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
