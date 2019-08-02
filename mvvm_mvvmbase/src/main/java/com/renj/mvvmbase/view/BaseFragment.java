@@ -1,5 +1,6 @@
 package com.renj.mvvmbase.view;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -10,11 +11,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
 import com.renj.mvvmbase.viewmodel.BaseViewModel;
+import com.renj.mvvmbase.viewmodel.ViewDialogData;
 import com.renj.utils.common.UIUtils;
 import com.renj.utils.res.ResUtils;
+import com.renj.utils.res.StringUtils;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 
 ;
@@ -48,12 +50,37 @@ public abstract class BaseFragment<VD extends ViewDataBinding, VM extends BaseVi
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         viewDataBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
-        View contentView = initRPageStatusController(viewDataBinding.getRoot());
-        // 注册 ARouter 路由
-        ARouter.getInstance().inject(this);
         viewModel = createAndBindViewModel(viewDataBinding);
+        listenerViewDialogData(viewModel);
+        View contentView = initRPageStatusController(viewDataBinding.getRoot());
+
+        // 注册 ARouter 路由
+        //ARouter.getInstance().inject(this);
         initPresenter();
         return contentView;
+    }
+
+    private void listenerViewDialogData(VM viewModel) {
+        if (viewModel != null) {
+            viewModel.viewDialogData.observeForever(new Observer<ViewDialogData>() {
+                @Override
+                public void onChanged(@Nullable ViewDialogData viewDialogData) {
+                    if (ViewDialogData.VIEW_DIALOG_STATUS_SHOW == viewDialogData.dialogStatus) {
+                        if (StringUtils.isEmptys(viewDialogData.succeedMsg, viewDialogData.failMsg)) {
+                            showLoadingDialog(viewDialogData.loadingMsg);
+                        } else {
+                            showLoadingDialog(viewDialogData.loadingMsg, viewDialogData.succeedMsg, viewDialogData.failMsg);
+                        }
+                    } else if (ViewDialogData.VIEW_DIALOG_STATUS_CLOSE_SUCCESS == viewDialogData.dialogStatus) {
+                        closeSucceedDialog(viewDialogData.closeMillis);
+                    } else if (ViewDialogData.VIEW_DIALOG_STATUS_CLOSE_FAIL == viewDialogData.dialogStatus) {
+                        closeFailDialog(viewDialogData.closeMillis);
+                    } else {
+                        closeLoadingDialog();
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -67,6 +94,11 @@ public abstract class BaseFragment<VD extends ViewDataBinding, VM extends BaseVi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     /**

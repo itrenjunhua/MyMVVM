@@ -1,12 +1,16 @@
 package com.renj.mvvm
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import com.renj.mvvm.databinding.ActivityMainBinding
+import com.renj.mvvmbase.view.BaseActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+    override fun createAndBindViewModel(viewDataBinding: ActivityMainBinding?): MainViewModel {
+        var mainViewModel = MainViewModel()
+        viewDataBinding?.mainViewModel = mainViewModel
+        return mainViewModel
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun getLayoutId(): Int {
+        return R.layout.activity_main
     }
 }

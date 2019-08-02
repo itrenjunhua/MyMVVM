@@ -1,5 +1,6 @@
 package com.renj.mvvmbase.view;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -17,13 +18,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
 import com.renj.mvvmbase.viewmodel.BaseViewModel;
+import com.renj.mvvmbase.viewmodel.ViewDialogData;
 import com.renj.utils.common.ActivityManager;
 import com.renj.utils.common.UIUtils;
 import com.renj.utils.common.ViewUtils;
 import com.renj.utils.res.ResUtils;
+import com.renj.utils.res.StringUtils;
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 import me.yokeyword.fragmentation.SupportActivity;
 
@@ -65,17 +67,49 @@ public abstract class BaseActivity<VD extends ViewDataBinding, VM extends BaseVi
         beforeOnCreateSuper(savedInstanceState);
         super.onCreate(savedInstanceState);
         // 注册 ARouter 路由
-        ARouter.getInstance().inject(this);
+        //ARouter.getInstance().inject(this);
         ActivityManager.addActivity(this);
+
         setContentView(R.layout.activity_base);
         LinearLayout llRootView = findViewById(R.id.ll_root_view);
         viewTitleBar = findViewById(R.id.view_title_bar);
         viewDataBinding = DataBindingUtil.inflate(getLayoutInflater(), getLayoutId(), null, false);
         llRootView.addView(viewDataBinding.getRoot());
-        initRPageStatusController(viewDataBinding.getRoot());
+
         viewModel = createAndBindViewModel(viewDataBinding);
+        listenerViewDialogData(viewModel);
+        initRPageStatusController(viewDataBinding.getRoot());
+
         initPresenter();
         initData();
+    }
+
+    protected void listenerViewDialogData(VM viewModel) {
+        if (viewModel != null) {
+            viewModel.viewDialogData.observeForever(new Observer<ViewDialogData>() {
+                @Override
+                public void onChanged(@Nullable ViewDialogData viewDialogData) {
+                    if (ViewDialogData.VIEW_DIALOG_STATUS_SHOW == viewDialogData.dialogStatus) {
+                        if (StringUtils.isEmptys(viewDialogData.succeedMsg, viewDialogData.failMsg)) {
+                            showLoadingDialog(viewDialogData.loadingMsg);
+                        } else {
+                            showLoadingDialog(viewDialogData.loadingMsg, viewDialogData.succeedMsg, viewDialogData.failMsg);
+                        }
+                    } else if (ViewDialogData.VIEW_DIALOG_STATUS_CLOSE_SUCCESS == viewDialogData.dialogStatus) {
+                        closeSucceedDialog(viewDialogData.closeMillis);
+                    } else if (ViewDialogData.VIEW_DIALOG_STATUS_CLOSE_FAIL == viewDialogData.dialogStatus) {
+                        closeFailDialog(viewDialogData.closeMillis);
+                    } else {
+                        closeLoadingDialog();
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     /**

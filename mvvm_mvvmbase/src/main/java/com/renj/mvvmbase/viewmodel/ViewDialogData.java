@@ -1,5 +1,7 @@
 package com.renj.mvvmbase.viewmodel;
 
+import android.support.annotation.IntRange;
+
 /**
  * ======================================================================
  * <p>
@@ -16,9 +18,30 @@ package com.renj.mvvmbase.viewmodel;
  */
 public class ViewDialogData {
     /**
+     * 显示 Dialog
+     */
+    public static final int VIEW_DIALOG_STATUS_SHOW = 0;
+    /**
+     * 直接关闭 Dialog
+     */
+    public static final int VIEW_DIALOG_STATUS_CLOSE = 1;
+    /**
+     * 显示成功并关闭 Dialog
+     */
+    public static final int VIEW_DIALOG_STATUS_CLOSE_SUCCESS = 2;
+    /**
+     * 显示失败并关闭 Dialog
+     */
+    public static final int VIEW_DIALOG_STATUS_CLOSE_FAIL = 3;
+    /**
+     * 默认成功和失败Dialog关闭时间
+     */
+    private static final long DEFAULT_CLOSE_TIME = 1800;
+    /**
      * 是否显示
      */
-    public boolean showDialog;
+    @IntRange(from = VIEW_DIALOG_STATUS_SHOW, to = VIEW_DIALOG_STATUS_CLOSE_FAIL)
+    public int dialogStatus;
     /**
      * 加载中的文字
      */
@@ -36,16 +59,16 @@ public class ViewDialogData {
      */
     public long closeMillis;
 
-    public ViewDialogData(boolean showDialog) {
-        this(showDialog, "加载中...");
+    public ViewDialogData(@IntRange(from = VIEW_DIALOG_STATUS_SHOW, to = VIEW_DIALOG_STATUS_CLOSE_FAIL) int dialogStatus) {
+        this(dialogStatus, "加载中...");
     }
 
-    public ViewDialogData(boolean showDialog, String loadingMsg) {
-        this(showDialog, loadingMsg, null, null, 0);
+    public ViewDialogData(@IntRange(from = VIEW_DIALOG_STATUS_SHOW, to = VIEW_DIALOG_STATUS_CLOSE_FAIL) int dialogStatus, String loadingMsg) {
+        this(dialogStatus, loadingMsg, null, null, DEFAULT_CLOSE_TIME);
     }
 
-    public ViewDialogData(boolean showDialog, String loadingMsg, String succeedMsg, String failMsg, long closeMillis) {
-        this.showDialog = showDialog;
+    public ViewDialogData(@IntRange(from = VIEW_DIALOG_STATUS_SHOW, to = VIEW_DIALOG_STATUS_CLOSE_FAIL) int dialogStatus, String loadingMsg, String succeedMsg, String failMsg, long closeMillis) {
+        this.dialogStatus = dialogStatus;
         this.loadingMsg = loadingMsg;
         this.succeedMsg = succeedMsg;
         this.failMsg = failMsg;

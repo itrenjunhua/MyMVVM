@@ -21,7 +21,7 @@ public class BaseLoadViewModel extends BaseViewModel {
     /**
      * 控制页面状态
      */
-    public MutableLiveData<Integer> pageStatus = new MutableLiveData<>();
+    public MutableLiveData<PageStatusData> pageStatusData = new MutableLiveData<>();
     /**
      * 获取Model层管理对象
      */

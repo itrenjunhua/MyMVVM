@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import com.renj.mvvmbase.viewmodel.BaseLoadViewModel;
+import com.renj.mvvmbase.viewmodel.PageStatusData;
 import com.renj.pagestatuscontroller.IRPageStatusController;
 import com.renj.pagestatuscontroller.RPageStatusController;
 import com.renj.pagestatuscontroller.annotation.RPageStatus;
@@ -25,7 +26,7 @@ import com.renj.pagestatuscontroller.listener.OnRPageEventListener;
  * <p>
  * ======================================================================
  */
-public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends BaseLoadViewModel> extends BaseActivity<VD,VM> {
+public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends BaseLoadViewModel> extends BaseActivity<VD, VM> {
     protected RPageStatusController rPageStatusController;
 
     @Override
@@ -43,14 +44,6 @@ public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends Ba
     protected void initRPageStatusController(View view) {
         rPageStatusController = RPageStatusController.get();
         rPageStatusController.bind(view);
-        if (viewModel != null) {
-            viewModel.pageStatus.observeForever(new Observer<Integer>() {
-                @Override
-                public void onChanged(@Nullable Integer integer) {
-                    // TODO 根据值调用显示不同状态的方法
-                }
-            });
-        }
         rPageStatusController.resetOnRPageEventListener(RPageStatus.ERROR, new OnRPageEventListener() {
             @Override
             public void onViewClick(@NonNull IRPageStatusController iRPageStatusController, int pageStatus, @NonNull Object object, @NonNull View view, int viewId) {
@@ -72,6 +65,28 @@ public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends Ba
                 handlerPageLoadException(iRPageStatusController, pageStatus, object, view, viewId);
             }
         });
+        // 监听页面状态改变
+        listenerPageStatusValue();
+    }
+
+    private void listenerPageStatusValue() {
+        if (viewModel != null) {
+            viewModel.pageStatusData.observeForever(new Observer<PageStatusData>() {
+                @Override
+                public void onChanged(@Nullable PageStatusData pageStatusData) {
+                    if (RPageStatus.LOADING == pageStatusData.pageStatus)
+                        showLoadingPage(pageStatusData.loadingStyle);
+                    if (RPageStatus.CONTENT == pageStatusData.pageStatus)
+                        showContentPage(pageStatusData.loadingStyle, pageStatusData.object);
+                    if (RPageStatus.EMPTY == pageStatusData.pageStatus)
+                        showEmptyDataPage(pageStatusData.loadingStyle, pageStatusData.object);
+                    if (RPageStatus.NET_WORK == pageStatusData.pageStatus)
+                        showNetWorkErrorPage(pageStatusData.loadingStyle);
+                    if (RPageStatus.ERROR == pageStatusData.pageStatus)
+                        showErrorPage(pageStatusData.loadingStyle, (Throwable) pageStatusData.object);
+                }
+            });
+        }
     }
 
     /**
@@ -100,11 +115,11 @@ public abstract class BaseLoadActivity<VD extends ViewDataBinding, VM extends Ba
      * {@link #showNetWorkErrorPage(int)}、{@link #showErrorPage(int, Throwable)} 时就是使用子类的 {@link RPageStatusController} 中调用，
      * 当 {@link LoadingStyle} 为 {@link LoadingStyle#LOADING_DIALOG}、{@link LoadingStyle#LOADING_PAGE} 状态之外的其他状态调用
      *
-     * @param status       当前状态，使用 {@link RPageStatus} 值
+     * @param pageStatus   当前状态，使用 {@link RPageStatus} 值
      * @param loadingStyle {@link LoadingStyle}
      * @param object       信息，包括 正确结果数据、异常信息等
      */
-    protected void showCustomResultPage(@RPageStatus int status, @LoadingStyle int loadingStyle, @Nullable Object object) {
+    protected void showCustomResultPage(@RPageStatus int pageStatus, @LoadingStyle int loadingStyle, @Nullable Object object) {
     }
 
     /**
