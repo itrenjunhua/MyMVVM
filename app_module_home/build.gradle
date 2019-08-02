@@ -1,0 +1,37 @@
+if (isBuildAsLibrary.toBoolean()) {
+    apply plugin: 'com.android.library'
+} else {
+    apply plugin: 'com.android.application'
+}
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply from: '../app_module.gradle' // 引入公共配置
+
+android {
+
+    // 默认配置
+    defaultConfig {
+        if (!isBuildAsLibrary.toBoolean()) {
+            applicationId rootProject.ext.android.applicationId
+        }
+    }
+
+    sourceSets {
+        main {
+            if (isBuildAsLibrary.toBoolean()) { // 作为主工程的依赖
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                // 移除debug资源
+                java {
+                    exclude 'debug/**'
+                }
+            } else { // 作为一个独立的应用
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(":app_lib_common")
+}

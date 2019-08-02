@@ -1,4 +1,4 @@
-include ':app', ':mvvm_mvvmbase', ':mvvm_rxsupport', ':app_lib_common'
+include ':app', ':mvvm_mvvmbase', ':mvvm_rxsupport', ':app_lib_common', ':app_module_home', ':mvp_mvpbase', ':mvp_rxsupport', ':app_module_found', ':app_module_my'
 include ':lib_android_utils', ':lib_android_view', ':lib_loading_dialog'
 include ':lib_http', ':lib_imageloader_interface', ':lib_imageloader_glide'
 include ':lib_rpagestatuscontroller', ':lib_android_cache'

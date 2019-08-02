@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.renj.mvvmbase.R;
 import com.renj.mvvmbase.viewmodel.BaseViewModel;
 import com.renj.mvvmbase.viewmodel.ViewDialogData;
@@ -55,7 +56,7 @@ public abstract class BaseFragment<VD extends ViewDataBinding, VM extends BaseVi
         View contentView = initRPageStatusController(viewDataBinding.getRoot());
 
         // 注册 ARouter 路由
-        //ARouter.getInstance().inject(this);
+        ARouter.getInstance().inject(this);
         initPresenter();
         return contentView;
     }

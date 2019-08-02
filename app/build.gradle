@@ -29,4 +29,10 @@ dependencies {
 
     implementation project(":mvvm_mvvmbase")
     implementation project(":app_lib_common")
+
+    if (isBuildAsLibrary.toBoolean()) {
+        implementation project(':app_module_home')
+        implementation project(':app_module_found')
+        implementation project(':app_module_my')
+    }
 }
