@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.aspsine.swipetoloadlayout.SwipeToLoadLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="foundViewModel" type="com.renj.found.viewmodel.FoundVM"/>
+    </data>
+
+<com.aspsine.swipetoloadlayout.SwipeToLoadLayout
     android:id="@+id/swipe_toLoad_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,6 +18,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/swipe_target"
         android:layout_width="match_parent"
+        app:adapter="@{foundViewModel.recyclerAdapter}"
         android:layout_height="match_parent" />
 
 </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
+</layout>

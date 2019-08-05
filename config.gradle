@@ -22,8 +22,9 @@ ext {
             rxPermissions           : "0.9.5@aar",
             retrofit                : "2.2.0",
             okhttpLogger            : "3.5.0",
-            butterknife             : "8.8.1",
             jetbrainsAnnotations    : "13.0",
+            androidArch             : "1.1.1",
+            bindingcollectionadapter: "2.3.0-beta3",
             imageGlide              : "4.6.1",
             fragmentation           : "1.3.3",
             gson                    : "2.8.5",
@@ -57,6 +58,13 @@ ext {
             "retrofitConverterGson"   : "com.squareup.retrofit2:converter-gson:${dependVersion.retrofit}",
             "retrofitConverterScalars": "com.squareup.retrofit2:converter-scalars:${dependVersion.retrofit}",
             "okhttpLogger"            : "com.squareup.okhttp3:logging-interceptor:${dependVersion.okhttpLogger}",
+            // LiveData and ViewModel
+            "archExtensions"                      : "android.arch.lifecycle:extensions:${dependVersion.androidArch}",
+            "archViewmodel"                       : "android.arch.lifecycle:viewmodel:${dependVersion.androidArch}",
+            "archLivedata"                        : "android.arch.lifecycle:livedata:${dependVersion.androidArch}",
+            // binding-collection-adapter  https://github.com/evant/binding-collection-adapter
+            "bindingcollectionadapter"            : "me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:${dependVersion.bindingcollectionadapter}",
+            "bindingcollectionadapteRrecyclerview": "me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:${dependVersion.bindingcollectionadapter}",
             // jetbrains 注解
             "jetbrainsAnnotations"    : "org.jetbrains:annotations:${dependVersion.jetbrainsAnnotations}",
             // Fragment 处理框架

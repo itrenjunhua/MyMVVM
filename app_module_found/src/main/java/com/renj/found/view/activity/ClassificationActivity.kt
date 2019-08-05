@@ -7,16 +7,12 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.renj.common.utils.aroute.ARouterPath
 import com.renj.found.R
 import com.renj.found.databinding.FoundClassificationActivityBinding
-import com.renj.found.mode.bean.response.ClassificationRPB
-import com.renj.found.view.cell.CellFactory
-import com.renj.found.view.cell.ClassificationCell
 import com.renj.found.viewmodel.ClassificationVM
 import com.renj.mvvmbase.view.BaseLoadActivity
 import com.renj.mvvmbase.view.LoadingStyle
 import com.renj.pagestatuscontroller.IRPageStatusController
 import com.renj.pagestatuscontroller.annotation.RPageStatus
 import com.renj.utils.net.NetWorkUtils
-import com.renj.view.recyclerview.adapter.RecyclerAdapter
 
 /**
  * ======================================================================
@@ -45,8 +41,6 @@ class ClassificationActivity : BaseLoadActivity<FoundClassificationActivityBindi
         return classificationVM
     }
 
-    private var recyclerAdapter: RecyclerAdapter<ClassificationCell>? = null
-
     override fun getLayoutId(): Int {
         return R.layout.found_classification_activity
     }
@@ -65,15 +59,9 @@ class ClassificationActivity : BaseLoadActivity<FoundClassificationActivityBindi
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = RecyclerAdapter()
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
-        viewDataBinding.swipeTarget.adapter = recyclerAdapter
         viewDataBinding.swipeTarget.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
-    }
-
-    fun classificationRequestSuccess(requestCode: Int, classificationRPB: ClassificationRPB) {
-        recyclerAdapter?.setData(CellFactory.createClassificationCell(classificationRPB.data))
     }
 
     override fun handlerPageLoadException(

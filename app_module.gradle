@@ -52,6 +52,11 @@ dependencies {
     androidTestImplementation rootProject.ext.dependencies["supportTestRunner"]
     androidTestImplementation rootProject.ext.dependencies["supportTestEspresso"]
 
+    // LiveData and ViewModel
+    implementation rootProject.ext.dependencies["archExtensions"]
+    implementation rootProject.ext.dependencies["archViewmodel"]
+    implementation rootProject.ext.dependencies["archLivedata"]
+
     // kotlin 支持
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

@@ -30,4 +30,7 @@ dependencies {
     implementation rootProject.ext.dependencies["recyclerviewV7"]
     // 刷新控件 https://github.com/Aspsine/SwipeToLoadLayout
     api rootProject.ext.dependencies["swipeToLoadLayout"]
+    // binding-collection-adapter  https://github.com/evant/binding-collection-adapter
+    api rootProject.ext.dependencies["bindingcollectionadapter"]
+    api rootProject.ext.dependencies["bindingcollectionadapteRrecyclerview"]
 }

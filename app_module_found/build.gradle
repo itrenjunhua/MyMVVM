@@ -16,6 +16,13 @@ android {
             applicationId rootProject.ext.android.applicationId
         }
 
+        // ARouter 路由
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+
         sourceSets {
             main {
                 if (isBuildAsLibrary.toBoolean()) { // 作为主工程的依赖

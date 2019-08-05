@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-
-import com.renj.common.utils.aroute.ARouterPath;
-import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.found.R;
+import com.renj.found.view.fragment.FoundFragment;
 
 /**
  * ======================================================================
@@ -29,7 +27,8 @@ public class FoundMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debug_found_main_activity);
 
-        Fragment fragment = ARouterUtils.getFragment(ARouterPath.PATH_FOUND_FRAGMENT_FOUND);
+//        Fragment fragment = ARouterUtils.getFragment(ARouterPath.PATH_FOUND_FRAGMENT_FOUND);
+        Fragment fragment = new FoundFragment();
 
         getSupportFragmentManager()
                 .beginTransaction()
