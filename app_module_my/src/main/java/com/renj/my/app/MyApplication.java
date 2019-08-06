@@ -1,11 +1,10 @@
 package com.renj.my.app;
 
 import android.app.Application;
-
 import com.renj.common.app.BaseApplication;
 import com.renj.common.app.IApplication;
 import com.renj.httplibrary.RetrofitUtil;
-import com.renj.mvpbase.mode.ModelManager;
+import com.renj.mvvmbase.mode.ModelManager;
 import com.renj.my.mode.db.DBHelper;
 import com.renj.my.mode.file.FileHelper;
 import com.renj.my.mode.http.ApiServer;

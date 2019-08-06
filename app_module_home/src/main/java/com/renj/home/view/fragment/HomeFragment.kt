@@ -7,9 +7,10 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.renj.common.utils.aroute.ARouterPath
 import com.renj.common.utils.aroute.ARouterUtils
 import com.renj.home.R
-import com.renj.mvpbase.view.BaseFragment
+import com.renj.home.databinding.HomeFragmentBinding
+import com.renj.mvvmbase.view.BaseFragment
+import com.renj.mvvmbase.viewmodel.BaseViewModel
 import com.renj.utils.res.ResUtils
-import kotlinx.android.synthetic.main.home_fragment.*
 import net.lucode.hackware.magicindicator.ViewPagerHelper
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
@@ -33,7 +34,10 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
  * ======================================================================
  */
 @Route(path = ARouterPath.PATH_HOME_FRAGMENT_HOME)
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment<HomeFragmentBinding,BaseViewModel>() {
+    override fun createAndBindViewModel(viewDataBinding: HomeFragmentBinding?): BaseViewModel {
+        return BaseViewModel()
+    }
 
     val titles: Array<String> by lazy {
         arrayOf(
@@ -55,7 +59,7 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun initViewPager() {
-        home_view_pager.adapter = object : FragmentPagerAdapter(childFragmentManager) {
+        viewDataBinding.homeViewPager.adapter = object : FragmentPagerAdapter(childFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 return fragments[position]
             }
@@ -71,7 +75,7 @@ class HomeFragment : BaseFragment() {
         commonNavigator.isAdjustMode = true
         commonNavigator.adapter = object : CommonNavigatorAdapter() {
             override fun getCount(): Int {
-                return if (titles == null) 0 else titles.size
+                return titles.size
             }
 
             override fun getTitleView(context: Context, index: Int): IPagerTitleView {
@@ -80,7 +84,7 @@ class HomeFragment : BaseFragment() {
                 colorTransitionPagerTitleView.selectedColor = ResUtils.getColor(R.color.app_main)
                 colorTransitionPagerTitleView.text = titles[index]
                 colorTransitionPagerTitleView.setOnClickListener {
-                    home_view_pager.currentItem = index
+                    viewDataBinding.homeViewPager.currentItem = index
                 }
                 return colorTransitionPagerTitleView
             }
@@ -92,7 +96,7 @@ class HomeFragment : BaseFragment() {
                 return indicator
             }
         }
-        home_magic_indicator.navigator = commonNavigator
-        ViewPagerHelper.bind(home_magic_indicator, home_view_pager)
+        viewDataBinding.homeMagicIndicator.navigator = commonNavigator
+        ViewPagerHelper.bind(viewDataBinding.homeMagicIndicator, viewDataBinding.homeViewPager)
     }
 }

@@ -4,8 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import com.renj.common.R;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
+import com.renj.common.databinding.CellSegmentationBinding;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
 /**
  * ======================================================================
@@ -21,7 +22,7 @@ import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class SegmentationCell extends RecyclerCell<String> {
+public class SegmentationCell extends BindingRecyclerCell<String, CellSegmentationBinding> {
     public SegmentationCell(String itemData) {
         super(itemData);
     }
@@ -33,12 +34,12 @@ public class SegmentationCell extends RecyclerCell<String> {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context, parent, R.layout.cell_segmentation);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context, parent, R.layout.cell_segmentation);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, String itemData) {
-        holder.setText(R.id.segmentation_name, itemData);
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, CellSegmentationBinding viewDataBinding, int position, String itemData) {
+        viewDataBinding.setSegmentationName(itemData);
     }
 }

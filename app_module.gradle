@@ -60,4 +60,7 @@ dependencies {
     // kotlin 支持
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // ARouter 路由 https://github.com/alibaba/ARouter
+    kapt rootProject.ext.dependencies["arouterCompiler"]
+
 }

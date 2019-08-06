@@ -4,16 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.renj.common.utils.aroute.ARouterPath;
-import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.common.mode.bean.bundle.WebActivityBundleData;
 import com.renj.common.mode.bean.bundle.WebActivityType;
+import com.renj.common.utils.aroute.ARouterPath;
+import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.found.R;
+import com.renj.found.databinding.FoundCellGeneralListBinding;
 import com.renj.found.mode.bean.data.GeneralListBean;
-import com.renj.view.recyclerview.adapter.RecyclerAdapter;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
+import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
 /**
  * ======================================================================
@@ -29,7 +29,7 @@ import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class GeneralListCell extends RecyclerCell<GeneralListBean> {
+public class GeneralListCell extends BindingRecyclerCell<GeneralListBean, FoundCellGeneralListBinding> {
     public GeneralListCell(GeneralListBean itemData) {
         super(itemData);
     }
@@ -41,19 +41,20 @@ public class GeneralListCell extends RecyclerCell<GeneralListBean> {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context, parent, R.layout.found_cell_general_list);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context, parent, R.layout.found_cell_general_list);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, GeneralListBean itemData) {
-        holder.setText(R.id.general_cell_tv, itemData.title);
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, FoundCellGeneralListBinding viewDataBinding, int position, GeneralListBean itemData) {
+        viewDataBinding.setItemValue(itemData);
     }
 
     @Override
-    public void onItemClick(@NonNull Context context, @NonNull RecyclerAdapter recyclerAdapter,
+    public void onItemClick(@NonNull Context context, @NonNull BindingRecyclerAdapter recyclerAdapter,
+                            @NonNull BindingRecyclerViewHolder holder, FoundCellGeneralListBinding viewDataBinding,
                             @NonNull View itemView, int position, GeneralListBean itemData) {
         WebActivityBundleData bundleData = new WebActivityBundleData(itemData.pid, itemData.id, itemData.title, itemData.content, itemData.url, itemData.images, WebActivityType.TYPE_LIST);
-        ARouterUtils.openActivity(ARouterPath.PATH_COMMON_ACTIVITY_WEB,"data", bundleData);
+        ARouterUtils.openActivity(ARouterPath.PATH_COMMON_ACTIVITY_WEB, "data", bundleData);
     }
 }

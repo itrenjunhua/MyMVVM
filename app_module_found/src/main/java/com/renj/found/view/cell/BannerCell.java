@@ -4,18 +4,17 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.renj.common.utils.aroute.ARouterPath;
-import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.common.mode.bean.bundle.WebActivityBundleData;
 import com.renj.common.mode.bean.bundle.WebActivityType;
 import com.renj.common.utils.ImageLoaderUtils;
+import com.renj.common.utils.aroute.ARouterPath;
+import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.found.R;
+import com.renj.found.databinding.FoundCellBannerBinding;
 import com.renj.found.mode.bean.data.BannerBean;
 import com.renj.imageloaderlibrary.config.ImageLoadConfig;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
-import com.youth.banner.Banner;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.loader.ImageLoader;
@@ -37,7 +36,7 @@ import java.util.List;
  * <p>
  * ======================================================================
  */
-public class BannerCell extends RecyclerCell<List<BannerBean>> {
+public class BannerCell extends BindingRecyclerCell<List<BannerBean>, FoundCellBannerBinding> {
     public BannerCell(List<BannerBean> itemData) {
         super(itemData);
     }
@@ -49,13 +48,12 @@ public class BannerCell extends RecyclerCell<List<BannerBean>> {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context, parent, R.layout.found_cell_banner);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context, parent, R.layout.found_cell_banner);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, final List<BannerBean> itemData) {
-        final Banner vpBanner = holder.getView(R.id.banner);
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, FoundCellBannerBinding viewDataBinding, int position, List<BannerBean> itemData) {
         List<String> images = new ArrayList<>();
         List<String> titles = new ArrayList<>();
 
@@ -65,9 +63,9 @@ public class BannerCell extends RecyclerCell<List<BannerBean>> {
         }
 
         //设置banner样式
-        vpBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
+        viewDataBinding.banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
         //设置图片加载器
-        vpBanner.setImageLoader(new ImageLoader() {
+        viewDataBinding.banner.setImageLoader(new ImageLoader() {
             @Override
             public void displayImage(Context context, Object path, ImageView imageView) {
                 ImageLoadConfig config = new ImageLoadConfig
@@ -81,24 +79,24 @@ public class BannerCell extends RecyclerCell<List<BannerBean>> {
             }
         });
         // 设置点击事件
-        vpBanner.setOnBannerListener(position1 -> {
+        viewDataBinding.banner.setOnBannerListener(position1 -> {
             BannerBean bannerBean = itemData.get(position1);
             WebActivityBundleData bundleData = new WebActivityBundleData(0, bannerBean.id, bannerBean.title, "", bannerBean.url, new ArrayList<>(), WebActivityType.TYPE_BANNER);
             ARouterUtils.openActivity(ARouterPath.PATH_COMMON_ACTIVITY_WEB, "data", bundleData);
         });
         //设置图片集合
-        vpBanner.setImages(images);
+        viewDataBinding.banner.setImages(images);
         //设置banner动画效果
-        vpBanner.setBannerAnimation(Transformer.DepthPage);
+        viewDataBinding.banner.setBannerAnimation(Transformer.DepthPage);
         //设置标题集合（当banner样式有显示title时）
-        vpBanner.setBannerTitles(titles);
+        viewDataBinding.banner.setBannerTitles(titles);
         //设置自动轮播，默认为true
-        vpBanner.isAutoPlay(true);
+//        viewDataBinding.banner.isAutoPlay(true);
         //设置轮播时间
-        vpBanner.setDelayTime(3000);
+//        viewDataBinding.banner.setDelayTime(3000);
         //设置指示器位置（当banner模式中有指示器时）
-        vpBanner.setIndicatorGravity(BannerConfig.RIGHT);
+        viewDataBinding.banner.setIndicatorGravity(BannerConfig.RIGHT);
         //banner设置方法全部调用完毕时最后调用
-        vpBanner.start();
+        viewDataBinding.banner.start();
     }
 }

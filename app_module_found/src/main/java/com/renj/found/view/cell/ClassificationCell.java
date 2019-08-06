@@ -5,14 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.renj.common.utils.aroute.ARouterPath;
 import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.found.R;
+import com.renj.found.databinding.FoundCellClassificationBinding;
 import com.renj.found.mode.bean.response.ClassificationRPB;
-import com.renj.view.recyclerview.adapter.RecyclerAdapter;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
+import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
 /**
  * ======================================================================
@@ -28,7 +28,7 @@ import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class ClassificationCell extends RecyclerCell<ClassificationRPB> {
+public class ClassificationCell extends BindingRecyclerCell<ClassificationRPB, FoundCellClassificationBinding> {
     public ClassificationCell(ClassificationRPB itemData) {
         super(itemData);
     }
@@ -40,20 +40,22 @@ public class ClassificationCell extends RecyclerCell<ClassificationRPB> {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context, parent, R.layout.found_cell_classification);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context, parent, R.layout.found_cell_classification);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, ClassificationRPB itemData) {
-        holder.setText(R.id.tv_classification_label, itemData.label);
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, FoundCellClassificationBinding viewDataBinding, int position, ClassificationRPB itemData) {
+        viewDataBinding.setClassificationRPB(itemData);
     }
 
     @Override
-    public void onItemClick(@NonNull Context context, @NonNull RecyclerAdapter recyclerAdapter, @NonNull View itemView, int position, ClassificationRPB itemData) {
+    public void onItemClick(@NonNull Context context, @NonNull BindingRecyclerAdapter recyclerAdapter,
+                            @NonNull BindingRecyclerViewHolder holder, FoundCellClassificationBinding viewDataBinding,
+                            @NonNull View itemView, int position, ClassificationRPB itemData) {
         Bundle bundle = new Bundle();
         bundle.putString("title", itemData.label);
         bundle.putInt("pid", itemData.id);
-        ARouterUtils.openActivity(ARouterPath.PATH_FOUND_ACTIVITY_CLASSIFICATION_LIST,"data", bundle);
+        ARouterUtils.openActivity(ARouterPath.PATH_FOUND_ACTIVITY_CLASSIFICATION_LIST, "data", bundle);
     }
 }

@@ -1,7 +1,7 @@
 package com.renj.my.mode.http;
 
 
-import com.renj.mvpbase.mode.IMvpHttpHelper;
+import com.renj.mvvmbase.mode.IMVVMHttpHelper;
 
 /**
  * ======================================================================
@@ -17,6 +17,6 @@ import com.renj.mvpbase.mode.IMvpHttpHelper;
  * <p>
  * ======================================================================
  */
-public interface IHttpHelper extends IMvpHttpHelper {
+public interface IHttpHelper extends IMVVMHttpHelper {
 
 }

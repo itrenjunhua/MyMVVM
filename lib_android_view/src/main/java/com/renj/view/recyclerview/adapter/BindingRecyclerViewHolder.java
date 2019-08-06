@@ -1,20 +1,14 @@
 package com.renj.view.recyclerview.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * ======================================================================
@@ -22,7 +16,7 @@ import android.widget.TextView;
  * 作者：Renj
  * 邮箱：renjunhua@anlovek.com
  * <p>
- * 创建时间：2019-06-05   9:55
+ * 创建时间：2019-08-06   11:22
  * <p>
  * 描述：
  * <p>
@@ -30,12 +24,13 @@ import android.widget.TextView;
  * <p>
  * ======================================================================
  */
-public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-    // 保存当前 item 的所有控件id，减少 findViewById 次数
-    private SparseArray<View> itemViews = new SparseArray<>();
+public class BindingRecyclerViewHolder<IDB extends ViewDataBinding> extends RecyclerView.ViewHolder {
+    protected IDB viewDataBinding;
 
-    public RecyclerViewHolder(View itemView) {
-        super(itemView);
+    public BindingRecyclerViewHolder(@NonNull IDB viewDataBinding) {
+        super(viewDataBinding.getRoot());
+        this.viewDataBinding = viewDataBinding;
+
         // 增加单击事件
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,56 +50,17 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public RecyclerViewHolder(@NonNull Context context, @NonNull ViewGroup parent, @LayoutRes int layoutId) {
-        this(LayoutInflater.from(context).inflate(layoutId, parent, false));
+    public BindingRecyclerViewHolder(@NonNull Context context, @NonNull ViewGroup parent, @LayoutRes int layoutId) {
+        this((IDB) DataBindingUtil.inflate(LayoutInflater.from(context), layoutId, parent, false));
     }
 
     public View getItemView() {
         return itemView;
     }
 
-    public TextView getTextView(@IdRes int vId) {
-        return getView(vId);
+    public ViewDataBinding getViewDataBinding() {
+        return viewDataBinding;
     }
-
-    public void setText(@IdRes int vId, @NonNull CharSequence content) {
-        getTextView(vId).setText(content);
-    }
-
-    public void setText(@IdRes int vId, @StringRes int strId) {
-        getTextView(vId).setText(strId);
-    }
-
-    public Button getButton(@IdRes int vId) {
-        return getView(vId);
-    }
-
-    public void setEnabled(@IdRes int vId, boolean enable) {
-        getButton(vId).setEnabled(enable);
-    }
-
-    public ImageView getImageView(@IdRes int vId) {
-        return getView(vId);
-    }
-
-    public void setBitmap(@IdRes int vId, @NonNull Bitmap bitmap) {
-        getImageView(vId).setImageBitmap(bitmap);
-    }
-
-    public void setBitmap(@IdRes int vId, @DrawableRes int resId) {
-        getImageView(vId).setImageResource(resId);
-
-    }
-
-    public  <T extends View> T getView(@IdRes int vId) {
-        View view = itemViews.get(vId);
-        if (view == null) {
-            view = getItemView().findViewById(vId);
-            itemViews.put(vId, view);
-        }
-        return (T) view;
-    }
-
 
     /* ====================== item click listener event ======================= */
     private OnItemViewClickListener mOnItemViewClickListener;

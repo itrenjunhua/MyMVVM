@@ -4,14 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.renj.common.utils.aroute.ARouterPath;
 import com.renj.common.utils.aroute.ARouterUtils;
 import com.renj.found.R;
-import com.renj.utils.res.StringUtils;
-import com.renj.view.recyclerview.adapter.RecyclerAdapter;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
+import com.renj.found.databinding.FoundCellSeeMoreBinding;
+import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
 /**
  * ======================================================================
@@ -27,7 +26,7 @@ import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class SeeMoreCell extends RecyclerCell<String> {
+public class SeeMoreCell extends BindingRecyclerCell<String, FoundCellSeeMoreBinding> {
     public SeeMoreCell(String itemData) {
         super(itemData);
     }
@@ -39,19 +38,20 @@ public class SeeMoreCell extends RecyclerCell<String> {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context, parent, R.layout.found_cell_see_more);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context, parent, R.layout.found_cell_see_more);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, String itemData) {
-        if (!StringUtils.isEmpty(itemData)) {
-            holder.setText(R.id.cell_see_more, itemData);
-        }
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, FoundCellSeeMoreBinding viewDataBinding, int position, String itemData) {
+        viewDataBinding.setTextValue(itemData);
     }
 
+
     @Override
-    public void onItemClick(@NonNull Context context, @NonNull RecyclerAdapter recyclerAdapter, @NonNull View itemView, int position, String itemData) {
+    public void onItemClick(@NonNull Context context, @NonNull BindingRecyclerAdapter recyclerAdapter,
+                            @NonNull BindingRecyclerViewHolder holder, FoundCellSeeMoreBinding viewDataBinding,
+                            @NonNull View itemView, int position, String itemData) {
         ARouterUtils.openActivity(ARouterPath.PATH_FOUND_ACTIVITY_CLASSIFICATION);
     }
 }

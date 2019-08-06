@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -19,6 +19,7 @@
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/swipe_target"
                 android:layout_width="match_parent"
+                app:adapter="@{classificationListVM.recyclerAdapter}"
                 android:layout_height="match_parent"/>
 
         <include

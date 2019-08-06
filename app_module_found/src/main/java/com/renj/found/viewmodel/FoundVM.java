@@ -13,8 +13,8 @@ import com.renj.pagestatuscontroller.annotation.RPageStatus;
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel;
 import com.renj.rxsupport.utils.RxUtils;
 import com.renj.utils.res.ResUtils;
-import com.renj.view.recyclerview.adapter.IRecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerAdapter;
+import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
+import com.renj.view.recyclerview.adapter.IBindingRecyclerCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
  * ======================================================================
  */
 public class FoundVM extends RxLoadViewModel {
-    public RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
+    public BindingRecyclerAdapter recyclerAdapter = new BindingRecyclerAdapter();
 
     public void foundRequest(int loadingStyle) {
         pageStatusData.setValue(new PageStatusData(RPageStatus.LOADING, loadingStyle));
@@ -45,7 +45,7 @@ public class FoundVM extends RxLoadViewModel {
                 .subscribeWith(new CustomSubscriber<FoundRPB>(loadingStyle, this) {
                     @Override
                     public void onResult(@NonNull FoundRPB foundRPB) {
-                        List<IRecyclerCell<?>> cells = new ArrayList<>();
+                        List<IBindingRecyclerCell<?,?>> cells = new ArrayList<>();
                         cells.add(CellFactory.createBannerCell(foundRPB.data.banners));
                         cells.add(CommonCellFactory.createSegmentationCell(ResUtils.getString(R.string.found_segmentation_name)));
                         cells.addAll(CellFactory.createGeneralListCell(foundRPB.data.beanList));

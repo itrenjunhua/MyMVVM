@@ -13,7 +13,7 @@ import com.renj.pagestatuscontroller.annotation.RPageStatus;
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel;
 import com.renj.rxsupport.utils.RxUtils;
 import com.renj.utils.collection.ListUtils;
-import com.renj.view.recyclerview.adapter.RecyclerAdapter;
+import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
 
 /**
  * ======================================================================
@@ -30,7 +30,7 @@ import com.renj.view.recyclerview.adapter.RecyclerAdapter;
  * ======================================================================
  */
 public class ClassificationVM extends RxLoadViewModel {
-    public RecyclerAdapter<ClassificationCell> recyclerAdapter = new RecyclerAdapter<>();
+    public BindingRecyclerAdapter<ClassificationCell> recyclerAdapter = new BindingRecyclerAdapter<>();
 
     public void classificationRequest(int loadingStyle) {
         pageStatusData.setValue(new PageStatusData(RPageStatus.LOADING, loadingStyle));

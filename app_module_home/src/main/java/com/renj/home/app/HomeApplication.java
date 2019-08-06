@@ -1,7 +1,6 @@
 package com.renj.home.app;
 
 import android.app.Application;
-
 import com.renj.common.app.BaseApplication;
 import com.renj.common.app.IApplication;
 import com.renj.home.mode.db.DBHelper;
@@ -9,7 +8,7 @@ import com.renj.home.mode.file.FileHelper;
 import com.renj.home.mode.http.ApiServer;
 import com.renj.home.mode.http.HttpHelper;
 import com.renj.httplibrary.RetrofitUtil;
-import com.renj.mvpbase.mode.ModelManager;
+import com.renj.mvvmbase.mode.ModelManager;
 
 /**
  * ======================================================================

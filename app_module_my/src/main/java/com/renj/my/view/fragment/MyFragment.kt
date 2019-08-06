@@ -3,10 +3,11 @@ package com.renj.my.view.fragment
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.renj.common.utils.aroute.ARouterPath
 import com.renj.common.utils.aroute.ARouterUtils
+import com.renj.mvvmbase.view.BaseFragment
+import com.renj.mvvmbase.viewmodel.BaseViewModel
 import com.renj.my.R
-import com.renj.rxsupport.rxview.RxBaseFragment
+import com.renj.my.databinding.MyFragmentBinding
 import com.renj.utils.common.UIUtils
-import kotlinx.android.synthetic.main.my_fragment.*
 
 /**
  * ======================================================================
@@ -28,19 +29,22 @@ import kotlinx.android.synthetic.main.my_fragment.*
  * ======================================================================
  */
 @Route(path = ARouterPath.PATH_MY_FRAGMENT_MY)
-class MyFragment : RxBaseFragment() {
+class MyFragment : BaseFragment<MyFragmentBinding, BaseViewModel>() {
+    override fun createAndBindViewModel(viewDataBinding: MyFragmentBinding?): BaseViewModel {
+        return BaseViewModel()
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.my_fragment
     }
 
     override fun initData() {
-        ll_me_see.setOnClickListener {
+        viewDataBinding.llMeSee.setOnClickListener {
             ARouterUtils.openActivity(ARouterPath.PATH_MY_ACTIVITY_SEE_LIST)
         }
-        ll_me_collection.setOnClickListener {
+        viewDataBinding.llMeCollection.setOnClickListener {
             ARouterUtils.openActivity(ARouterPath.PATH_MY_ACTIVITY_COLLECTION_LIST)
         }
-        ll_me_about.setOnClickListener { UIUtils.showToastSafe(R.string.my_about) }
+        viewDataBinding.llMeAbout.setOnClickListener { UIUtils.showToastSafe(R.string.my_about) }
     }
 }

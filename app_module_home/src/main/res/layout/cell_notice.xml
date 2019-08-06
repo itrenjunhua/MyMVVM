@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.renj.home.weight.NoticeTextSwitcher
+            android:id="@+id/noticeText"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    </com.renj.home.weight.NoticeTextSwitcher>
+
+</layout>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
-        <variable name="seeAndCollectionVM" type="com.renj.my.viewmodel.SeeAndCollectionListVM"/>
+        <variable name="csdnViewModel" type="com.renj.home.viewmodel.MyCSDNVM"/>
     </data>
+
     <com.aspsine.swipetoloadlayout.SwipeToLoadLayout
             android:id="@+id/swipe_toLoad_layout"
             android:layout_width="match_parent"
@@ -15,7 +17,7 @@
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/swipe_target"
-                app:adapter="@{seeAndCollectionVM.recyclerAdapter}"
+                app:adapter="@{csdnViewModel.recyclerAdapter}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -24,4 +26,5 @@
                 layout="@layout/module_view_refresh_footer_view"/>
 
     </com.aspsine.swipetoloadlayout.SwipeToLoadLayout>
+
 </layout>

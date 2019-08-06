@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.youth.banner.Banner
-    android:id="@+id/banner"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="240dp"
-    app:indicator_drawable_selected="@drawable/common_shape_oval_white"
-    app:indicator_drawable_unselected="@drawable/common_shape_oval_gray"/>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            app:is_auto_play="true"
+            app:delay_time="3000"
+            app:indicator_drawable_selected="@drawable/common_shape_oval_white"
+            app:indicator_drawable_unselected="@drawable/common_shape_oval_gray"/>
+</layout>

@@ -2,8 +2,7 @@ package com.renj.home.mode.http;
 
 import com.renj.home.mode.bean.response.BannerAndNoticeRPB;
 import com.renj.home.mode.bean.response.GeneralListRPB;
-import com.renj.mvpbase.mode.IMvpHttpHelper;
-
+import com.renj.mvvmbase.mode.IMVVMHttpHelper;
 import io.reactivex.Flowable;
 import retrofit2.Response;
 
@@ -22,7 +21,7 @@ import retrofit2.Response;
  * <p>
  * ======================================================================
  */
-public interface IHttpHelper extends IMvpHttpHelper {
+public interface IHttpHelper extends IMVVMHttpHelper {
     /**
      * 我的CSDN banner和公告数据
      */

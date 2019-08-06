@@ -1,8 +1,10 @@
 package com.renj.found.view.cell;
 
+import com.renj.found.R;
 import com.renj.found.mode.bean.data.BannerBean;
 import com.renj.found.mode.bean.data.GeneralListBean;
 import com.renj.found.mode.bean.response.ClassificationRPB;
+import com.renj.utils.res.ResUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,6 @@ public class CellFactory {
     }
 
     public static SeeMoreCell createSeeMoreCell() {
-        return new SeeMoreCell(null);
+        return new SeeMoreCell(ResUtils.getString(R.string.found_see_more));
     }
 }

@@ -1,11 +1,12 @@
 package com.renj.common.cell;
 
 import android.content.Context;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import com.renj.common.R;
-import com.renj.view.recyclerview.adapter.RecyclerCell;
-import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
+import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
+import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
 /**
  * ======================================================================
@@ -21,7 +22,7 @@ import com.renj.view.recyclerview.adapter.RecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class NoMoreCell extends RecyclerCell {
+public class NoMoreCell extends BindingRecyclerCell {
     public NoMoreCell(Object itemData) {
         super(itemData);
     }
@@ -33,12 +34,12 @@ public class NoMoreCell extends RecyclerCell {
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
-        return new RecyclerViewHolder(context,parent, R.layout.status_view_no_more_item);
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull Context context, @NonNull ViewGroup parent, int viewType) {
+        return new BindingRecyclerViewHolder(context,parent, R.layout.status_view_no_more_item);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position, Object itemData) {
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, ViewDataBinding viewDataBinding, int position, Object itemData) {
 
     }
 }

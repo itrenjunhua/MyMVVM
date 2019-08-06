@@ -1,5 +1,6 @@
 package com.renj.view.recyclerview.adapter;
 
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,22 +15,22 @@ import java.util.List;
  * 作者：Renj
  * 邮箱：renjunhua@anlovek.com
  * <p>
- * 创建时间：2019-06-05   9:52
+ * 创建时间：2019-08-06   11:21
  * <p>
- * 描述：{@link RecyclerView} 适配器封装，内部包含 {@link IRecyclerCell} 列表
+ * 描述：
  * <p>
  * 修订历史：
  * <p>
  * ======================================================================
  */
-public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class BindingRecyclerAdapter<T extends IBindingRecyclerCell> extends RecyclerView.Adapter<BindingRecyclerViewHolder<? extends ViewDataBinding>> {
     private List<T> cellList;
 
-    public RecyclerAdapter() {
+    public BindingRecyclerAdapter() {
         this.cellList = new ArrayList<>();
     }
 
-    public RecyclerAdapter(@NonNull List<T> cellList) {
+    public BindingRecyclerAdapter(@NonNull List<T> cellList) {
         if (isEmpty(this.cellList))
             this.cellList = new ArrayList<>();
         else
@@ -50,7 +51,7 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BindingRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         for (T cell : cellList) {
             if (viewType == cell.getRecyclerItemType()) {
                 return cell.onCreateViewHolder(parent.getContext(), parent, viewType);
@@ -60,22 +61,24 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, int position) {
         final int tmpPosition = position;
         final T cell = this.cellList.get(position);
-        holder.setOnItemViewClickListener(new RecyclerViewHolder.OnItemViewClickListener() {
+        final BindingRecyclerViewHolder viewHolder = holder;
+        viewHolder.setOnItemViewClickListener(new BindingRecyclerViewHolder.OnItemViewClickListener() {
             @Override
             public void onItemViewClick(View itemView) {
-                cell.onItemClick(itemView.getContext(), RecyclerAdapter.this, itemView, tmpPosition, cell.getItemData());
+                cell.onItemClick(itemView.getContext(), BindingRecyclerAdapter.this, viewHolder, viewHolder.viewDataBinding, itemView, tmpPosition, cell.getItemData());
             }
         });
-        holder.setOnItemViewLongClickListener(new RecyclerViewHolder.OnItemViewLongClickListener() {
+        viewHolder.setOnItemViewLongClickListener(new BindingRecyclerViewHolder.OnItemViewLongClickListener() {
             @Override
             public boolean onItemLongViewClick(View itemView) {
-                return cell.onItemLongClick(itemView.getContext(), RecyclerAdapter.this, itemView, tmpPosition, cell.getItemData());
+                return cell.onItemLongClick(itemView.getContext(), BindingRecyclerAdapter.this, viewHolder, viewHolder.viewDataBinding, itemView, tmpPosition, cell.getItemData());
             }
         });
-        cellList.get(position).onBindViewHolder(holder, position, cell.getItemData());
+        cellList.get(position).onBindViewHolder(viewHolder, viewHolder.viewDataBinding, position, cell.getItemData());
+        viewHolder.viewDataBinding.executePendingBindings();
     }
 
     @Override
@@ -84,21 +87,21 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull RecyclerViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull BindingRecyclerViewHolder holder) {
         int adapterPosition = holder.getAdapterPosition();
         if (adapterPosition < 0 || adapterPosition >= cellList.size())
             return;
 
-        cellList.get(adapterPosition).onAttachedToWindow(holder);
+        cellList.get(adapterPosition).onAttachedToWindow(holder, holder.viewDataBinding);
     }
 
     @Override
-    public void onViewDetachedFromWindow(@NonNull RecyclerViewHolder holder) {
+    public void onViewDetachedFromWindow(@NonNull BindingRecyclerViewHolder holder) {
         int adapterPosition = holder.getAdapterPosition();
         if (adapterPosition < 0 || adapterPosition >= cellList.size())
             return;
 
-        cellList.get(adapterPosition).onDetachedFromWindow(holder);
+        cellList.get(adapterPosition).onDetachedFromWindow(holder, holder.viewDataBinding);
     }
 
 
@@ -129,14 +132,14 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /* -------------------------  add IRecyclerCell ------------------------- */
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void addAndNotifyAll(@NonNull List<T> dataList) {
         add(dataList, true);
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void addAndNotifyItem(@NonNull List<T> dataList) {
         add(dataList, false);
@@ -145,8 +148,8 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 增加数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void add(@NonNull List<T> dataList, boolean refreshAllItem) {
         if (!isEmpty(dataList)) {
@@ -162,14 +165,14 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void addAndNotifyAll(int index, @NonNull List<T> dataList) {
         add(index, dataList, true);
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void addAndNotifyItem(int index, @NonNull List<T> dataList) {
         add(index, dataList, false);
@@ -178,8 +181,8 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 增加数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void add(int index, @NonNull List<T> dataList, boolean refreshAllItem) {
         if (!isEmpty(dataList)) {
@@ -194,14 +197,14 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void addAndNotifyAll(@NonNull T data) {
         add(data, true);
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void addAndNotifyItem(@NonNull T data) {
         add(data, false);
@@ -210,8 +213,8 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 增加数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void add(@NonNull T data, boolean refreshAllItem) {
         if (!isEmpty(data)) {
@@ -226,14 +229,14 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void addAndNotifyAll(int index, @NonNull T data) {
         add(index, data, true);
     }
 
     /**
-     * 增加数据，并调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 增加数据，并调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void addAndNotifyItem(int index, @NonNull T data) {
         add(index, data, false);
@@ -242,8 +245,8 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 增加数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void add(int index, @NonNull T data, boolean refreshAllItem) {
         if (!isEmpty(data)) {
@@ -270,8 +273,8 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 修改数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemChanged(int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemChanged(int)} 方法刷新列表
      */
     public void modify(int index, @NonNull T data, boolean refreshAllItem) {
         if (index < 0 || index >= this.cellList.size())
@@ -289,15 +292,15 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /* -------------------------  remove IRecyclerCell ------------------------- */
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void removeAndNotifyAll(@NonNull T data) {
         remove(data, true);
     }
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyItemRemoved(int)}
-     * 和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyItemRemoved(int)}
+     * 和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void removeAndNotifyItem(@NonNull T data) {
         remove(data, false);
@@ -306,9 +309,9 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 移除数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRemoved(int)}
-     *                       和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRemoved(int)}
+     *                       和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void remove(@NonNull T data, boolean refreshAllItem) {
         if (!isEmpty(data))
@@ -316,15 +319,15 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void removeAndNotifyAll(int index) {
         remove(index, true);
     }
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyItemRemoved(int)}
-     * 和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyItemRemoved(int)}
+     * 和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void removeAndNotifyItem(int index) {
         remove(index, false);
@@ -333,9 +336,9 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 移除数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRemoved(int)}
-     *                       和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRemoved(int)}
+     *                       和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void remove(int index, boolean refreshAllItem) {
         if (index < 0 || index >= this.cellList.size())
@@ -353,15 +356,15 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     }
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表
      */
     public void removeAndNotifyAll(int start, int count) {
         remove(start, count, true);
     }
 
     /**
-     * 移除数据，调用 {@link RecyclerAdapter#notifyItemRangeRemoved(int, int)}
-     * 和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * 移除数据，调用 {@link BindingRecyclerAdapter#notifyItemRangeRemoved(int, int)}
+     * 和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void removeAndNotifyItem(int start, int count) {
         remove(start, count, false);
@@ -370,9 +373,9 @@ public class RecyclerAdapter<T extends IRecyclerCell> extends RecyclerView.Adapt
     /**
      * 移除数据
      *
-     * @param refreshAllItem true：调用 {@link RecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
-     *                       false：调用 {@link RecyclerAdapter#notifyItemRangeRemoved(int, int)}
-     *                       和 {@link RecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
+     * @param refreshAllItem true：调用 {@link BindingRecyclerAdapter#notifyDataSetChanged()} 方法刷新列表<br/>
+     *                       false：调用 {@link BindingRecyclerAdapter#notifyItemRangeRemoved(int, int)}
+     *                       和 {@link BindingRecyclerAdapter#notifyItemRangeInserted(int, int)} 方法刷新列表
      */
     public void remove(int start, int count, boolean refreshAllItem) {
         if ((start + count) > this.cellList.size()) {
