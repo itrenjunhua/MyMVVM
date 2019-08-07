@@ -42,8 +42,6 @@ class WebViewActivity : BaseLoadActivity<WebViewActivityBinding, WebViewVM>() {
         return webViewVM
     }
 
-    private var collectionStatus = false
-
     @JvmField
     @Autowired(name = "data")
     var bundleData: WebActivityBundleData? = null
@@ -56,14 +54,15 @@ class WebViewActivity : BaseLoadActivity<WebViewActivityBinding, WebViewVM>() {
     override fun initData() {
         bundleData?.title?.let { setPageTitle(it) }
         setPageBack(true, false, null)
-        viewModel.bottomVisible.value = if (bundleData!!.type == TYPE_LIST) View.VISIBLE else View.GONE
+        viewModel.webBottomVisible.value = bundleData!!.type == TYPE_LIST
 
         if (bundleData!!.type == TYPE_LIST) {
             handlerSeeCount(bundleData)
             viewModel.getCollectionStatus(bundleData!!.pid, bundleData!!.id)
 
             viewDataBinding.ivCollection.setOnClickListener {
-                viewModel.changeCollectionStatus(bundleData!!.pid, bundleData!!.id, !collectionStatus)
+                var collectionStatus = viewModel.webCollectionStatus.value
+                viewModel.changeCollectionStatus(bundleData!!.pid, bundleData!!.id, !collectionStatus!!)
             }
         }
 

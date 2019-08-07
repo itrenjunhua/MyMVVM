@@ -78,6 +78,7 @@ public abstract class BaseActivity<VD extends ViewDataBinding, VM extends BaseVi
         llRootView.addView(viewDataBinding.getRoot());
 
         viewModel = createAndBindViewModel(viewDataBinding);
+        viewDataBinding.setLifecycleOwner(this);
         listenerViewDialogData(viewModel);
         initRPageStatusController(viewDataBinding.getRoot());
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
+        <import type="android.view.View"/>
         <variable name="seeAndCollectionDB" type="com.renj.common.mode.bean.dp.ListSeeAndCollectionDB"/>
-        <variable name="visible" type="int"/>
+        <variable name="visible" type="Boolean"/>
     </data>
     <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                 android:layout_marginStart="6dp"
                 android:text="查看次数："
                 android:textColor="@color/main_text2"
-                android:visibility="@{visible}"
+                android:visibility="@{visible ? View.VISIBLE : View.GONE}"
                 android:textSize="13sp"/>
 
         <TextView
@@ -38,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:text="@{seeAndCollectionDB.seeCount}"
-                android:visibility="@{visible}"
+                android:text="@{String.valueOf(seeAndCollectionDB.seeCount)}"
+                android:visibility="@{visible ? View.VISIBLE : View.GONE}"
                 android:textColor="@color/main_text2"
                 android:textSize="13sp"/>
 

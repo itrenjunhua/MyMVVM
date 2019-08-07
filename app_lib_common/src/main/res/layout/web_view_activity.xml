@@ -2,6 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="com.renj.common.R"/>
+        <import type="android.view.View"/>
         <variable name="webViewVM" type="com.renj.mvp.presenter.WebViewVM"/>
     </data>
 
@@ -27,7 +29,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
-                android:visibility="@{webViewVM.bottomVisible}"
+                android:visibility="@{webViewVM.webBottomVisible ? View.VISIBLE : View.GONE}"
                 android:paddingEnd="16dp">
 
             <TextView
@@ -42,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{webViewVM.seeCount}"
+                    android:text="@{String.valueOf(webViewVM.webSeeCount)}"
                     android:textColor="@color/app_main"
                     android:textSize="13sp"/>
 
@@ -57,7 +59,7 @@
                     android:id="@+id/iv_collection"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:background="@{webViewVM.collectionDrawableId}"/>
+                    android:background="@{webViewVM.webCollectionStatus ? R.mipmap.web_collection_s : R.mipmap.web_collection_n}"/>
 
         </LinearLayout>
 

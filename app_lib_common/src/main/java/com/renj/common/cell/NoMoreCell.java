@@ -1,10 +1,10 @@
 package com.renj.common.cell;
 
 import android.content.Context;
-import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import com.renj.common.R;
+import com.renj.common.databinding.StatusViewNoMoreItemBinding;
 import com.renj.view.recyclerview.adapter.BindingRecyclerCell;
 import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
 
@@ -22,8 +22,8 @@ import com.renj.view.recyclerview.adapter.BindingRecyclerViewHolder;
  * <p>
  * ======================================================================
  */
-public class NoMoreCell extends BindingRecyclerCell {
-    public NoMoreCell(Object itemData) {
+public class NoMoreCell extends BindingRecyclerCell<String, StatusViewNoMoreItemBinding> {
+    public NoMoreCell(String itemData) {
         super(itemData);
     }
 
@@ -39,7 +39,7 @@ public class NoMoreCell extends BindingRecyclerCell {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, ViewDataBinding viewDataBinding, int position, Object itemData) {
+    public void onBindViewHolder(@NonNull BindingRecyclerViewHolder holder, StatusViewNoMoreItemBinding viewDataBinding, int position, String itemData) {
 
     }
 }

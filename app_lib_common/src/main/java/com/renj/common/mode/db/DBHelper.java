@@ -61,7 +61,7 @@ public class DBHelper implements IDBHelper {
         updateCollectionDBDao.setCollection((byte) (collectionStatus == true ? 1 : 0));
         updateCollectionDBDao.setImages(collectionDB.getImages());
         daoSession.update(updateCollectionDBDao);
-        return Flowable.create(e -> e.onNext(true), BackpressureStrategy.BUFFER);
+        return Flowable.create(e -> e.onNext(collectionStatus), BackpressureStrategy.BUFFER);
     }
 
     /**

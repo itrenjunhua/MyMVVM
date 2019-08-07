@@ -1,7 +1,6 @@
 package com.renj.mvp.presenter
 
 import android.arch.lifecycle.MutableLiveData
-import com.renj.common.R
 import com.renj.common.mode.db.DBHelper
 import com.renj.common.mode.db.GeneralListData
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel
@@ -28,13 +27,9 @@ import io.reactivex.subscribers.ResourceSubscriber
  * ======================================================================
  */
 class WebViewVM : RxLoadViewModel() {
-    var collectionDrawableId = MutableLiveData<Int>()
-    var seeCount = MutableLiveData<String>()
-    var bottomVisible = MutableLiveData<Int>()
-
-    init {
-        collectionDrawableId.value = R.mipmap.web_collection_n
-    }
+    var webCollectionStatus = MutableLiveData<Boolean>()
+    var webSeeCount = MutableLiveData<Long>()
+    var webBottomVisible = MutableLiveData<Boolean>()
 
     fun getCollectionStatus(pid: Int, id: Int) {
         addDisposable(mModelManager.getDBHelper(DBHelper::class.java)
@@ -45,8 +40,7 @@ class WebViewVM : RxLoadViewModel() {
                 }
 
                 override fun onNext(collectionStatus: Boolean?) {
-                    collectionDrawableId.value =
-                        if (collectionStatus!!) R.mipmap.web_collection_s else R.mipmap.web_collection_n
+                    webCollectionStatus.value = collectionStatus
                 }
 
                 override fun onError(t: Throwable?) {
@@ -62,10 +56,11 @@ class WebViewVM : RxLoadViewModel() {
             .compose(RxUtils.newInstance().threadTransformer())
             .subscribeWith(object : ResourceSubscriber<Long>() {
                 override fun onComplete() {
+                    webSeeCount.value = 10
                 }
 
                 override fun onNext(seeCount: Long?) {
-                    this@WebViewVM.seeCount.value = seeCount.toString()
+                    webSeeCount.value = seeCount
                 }
 
                 override fun onError(t: Throwable?) {
@@ -84,8 +79,7 @@ class WebViewVM : RxLoadViewModel() {
                 }
 
                 override fun onNext(collectionStatus: Boolean?) {
-                    collectionDrawableId.value =
-                        if (collectionStatus!!) R.mipmap.web_collection_s else R.mipmap.web_collection_n
+                    webCollectionStatus.value = collectionStatus
                 }
 
                 override fun onError(t: Throwable?) {

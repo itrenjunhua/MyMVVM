@@ -52,6 +52,7 @@ public abstract class BaseFragment<VD extends ViewDataBinding, VM extends BaseVi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         viewDataBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
         viewModel = createAndBindViewModel(viewDataBinding);
+        viewDataBinding.setLifecycleOwner(this);
         listenerViewDialogData(viewModel);
         View contentView = initRPageStatusController(viewDataBinding.getRoot());
 

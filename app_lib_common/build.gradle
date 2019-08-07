@@ -15,9 +15,9 @@ dependencies {
     // greenDao https://github.com/greenrobot/greenDAO
     api rootProject.ext.dependencies["greendao"]
 
-    // MVPBase
     api project(':mvvm_mvvmbase')
     api project(':mvvm_rxsupport')
+    api project(':binding_custom')
     api project(':lib_http')
     api project(':lib_android_utils')
     api project(':lib_android_view')

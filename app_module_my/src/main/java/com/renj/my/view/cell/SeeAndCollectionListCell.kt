@@ -37,7 +37,7 @@ import com.renj.view.recyclerview.adapter.IBindingRecyclerCell
 class SeeAndCollectionListCell(itemData: ListSeeAndCollectionDB, isSeeList: Boolean) :
     BindingRecyclerCell<ListSeeAndCollectionDB, CellSeeAndCollectionListBinding>(itemData) {
 
-    private var isSeeList:Boolean = false
+    private var isSeeList: Boolean = false
 
     init {
         this.isSeeList = isSeeList
@@ -61,7 +61,7 @@ class SeeAndCollectionListCell(itemData: ListSeeAndCollectionDB, isSeeList: Bool
         position: Int,
         itemData: ListSeeAndCollectionDB?
     ) {
-        viewDataBinding?.visible = if(isSeeList) View.VISIBLE else View.GONE
+        viewDataBinding?.visible = isSeeList
         viewDataBinding?.seeAndCollectionDB = itemData
     }
 
