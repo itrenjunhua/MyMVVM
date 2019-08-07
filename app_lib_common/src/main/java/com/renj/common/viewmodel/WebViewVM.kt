@@ -1,6 +1,8 @@
 package com.renj.mvp.presenter
 
 import android.arch.lifecycle.MutableLiveData
+import com.renj.common.mode.bean.bundle.WebActivityBundleData
+import com.renj.common.mode.bean.bundle.WebActivityType
 import com.renj.common.mode.db.DBHelper
 import com.renj.common.mode.db.GeneralListData
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel
@@ -26,66 +28,87 @@ import io.reactivex.subscribers.ResourceSubscriber
  *
  * ======================================================================
  */
-class WebViewVM : RxLoadViewModel() {
+class WebViewVM(var bundleData: WebActivityBundleData?) : RxLoadViewModel() {
+
     var webCollectionStatus = MutableLiveData<Boolean>()
     var webSeeCount = MutableLiveData<Long>()
     var webBottomVisible = MutableLiveData<Boolean>()
 
-    fun getCollectionStatus(pid: Int, id: Int) {
-        addDisposable(mModelManager.getDBHelper(DBHelper::class.java)
-            .getCollectionStatus(pid, id)
-            .compose(RxUtils.newInstance().threadTransformer())
-            .subscribeWith(object : ResourceSubscriber<Boolean>() {
-                override fun onComplete() {
-                }
+    init {
+        webBottomVisible.value = bundleData?.type == WebActivityType.TYPE_LIST
 
-                override fun onNext(collectionStatus: Boolean?) {
-                    webCollectionStatus.value = collectionStatus
-                }
+        if (bundleData?.type == WebActivityType.TYPE_LIST) {
+            addSeeCount()
+            getCollectionStatus()
+        }
+    }
 
-                override fun onError(t: Throwable?) {
-                }
+    private fun getCollectionStatus() {
+        addDisposable(
+            mModelManager.getDBHelper(DBHelper::class.java)
+                .getCollectionStatus(bundleData!!.pid, bundleData!!.id)
+                .compose(RxUtils.newInstance().threadTransformer())
+                .subscribeWith(object : ResourceSubscriber<Boolean>() {
+                    override fun onComplete() {
+                    }
 
-            })
+                    override fun onNext(collectionStatus: Boolean?) {
+                        webCollectionStatus.value = collectionStatus
+                    }
+
+                    override fun onError(t: Throwable?) {
+                    }
+
+                })
         )
     }
 
-    fun addSeeCount(generalListData: GeneralListData) {
-        addDisposable(mModelManager.getDBHelper(DBHelper::class.java)
-            .addSeeCount(generalListData)
-            .compose(RxUtils.newInstance().threadTransformer())
-            .subscribeWith(object : ResourceSubscriber<Long>() {
-                override fun onComplete() {
-                    webSeeCount.value = 10
-                }
+    private fun addSeeCount() {
+        var generalListBean = GeneralListData()
+        generalListBean.pid = bundleData!!.pid
+        generalListBean.id = bundleData!!.id
+        generalListBean.title = bundleData!!.title
+        generalListBean.content = bundleData!!.content
+        generalListBean.url = bundleData!!.url
+        generalListBean.images = bundleData!!.images
 
-                override fun onNext(seeCount: Long?) {
-                    webSeeCount.value = seeCount
-                }
+        addDisposable(
+            mModelManager.getDBHelper(DBHelper::class.java)
+                .addSeeCount(generalListBean)
+                .compose(RxUtils.newInstance().threadTransformer())
+                .subscribeWith(object : ResourceSubscriber<Long>() {
+                    override fun onComplete() {
+                        webSeeCount.value = 10
+                    }
 
-                override fun onError(t: Throwable?) {
-                }
+                    override fun onNext(seeCount: Long?) {
+                        webSeeCount.value = seeCount
+                    }
 
-            })
+                    override fun onError(t: Throwable?) {
+                    }
+
+                })
         )
     }
 
-    fun changeCollectionStatus(pid: Int, id: Int, collectionStatus: Boolean) {
-        addDisposable(mModelManager.getDBHelper(DBHelper::class.java)
-            .changeCollectionStatus(pid, id, collectionStatus)
-            .compose(RxUtils.newInstance().threadTransformer())
-            .subscribeWith(object : ResourceSubscriber<Boolean>() {
-                override fun onComplete() {
-                }
+    fun changeCollectionStatus() {
+        addDisposable(
+            mModelManager.getDBHelper(DBHelper::class.java)
+                .changeCollectionStatus(bundleData!!.pid, bundleData!!.id, !webCollectionStatus.value!!)
+                .compose(RxUtils.newInstance().threadTransformer())
+                .subscribeWith(object : ResourceSubscriber<Boolean>() {
+                    override fun onComplete() {
+                    }
 
-                override fun onNext(collectionStatus: Boolean?) {
-                    webCollectionStatus.value = collectionStatus
-                }
+                    override fun onNext(collectionStatus: Boolean?) {
+                        webCollectionStatus.value = collectionStatus
+                    }
 
-                override fun onError(t: Throwable?) {
-                }
+                    override fun onError(t: Throwable?) {
+                    }
 
-            })
+                })
         )
     }
 

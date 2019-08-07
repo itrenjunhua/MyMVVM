@@ -13,8 +13,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.renj.common.R
 import com.renj.common.databinding.WebViewActivityBinding
 import com.renj.common.mode.bean.bundle.WebActivityBundleData
-import com.renj.common.mode.bean.bundle.WebActivityType.TYPE_LIST
-import com.renj.common.mode.db.GeneralListData
 import com.renj.common.utils.aroute.ARouterPath
 import com.renj.mvp.presenter.WebViewVM
 import com.renj.mvvmbase.view.BaseLoadActivity
@@ -36,15 +34,15 @@ import com.renj.mvvmbase.view.BaseLoadActivity
  */
 @Route(path = ARouterPath.PATH_COMMON_ACTIVITY_WEB)
 class WebViewActivity : BaseLoadActivity<WebViewActivityBinding, WebViewVM>() {
-    override fun createAndBindViewModel(viewDataBinding: WebViewActivityBinding?): WebViewVM {
-        var webViewVM = WebViewVM()
-        viewDataBinding?.webViewVM = webViewVM
-        return webViewVM
-    }
-
     @JvmField
     @Autowired(name = "data")
     var bundleData: WebActivityBundleData? = null
+
+    override fun createAndBindViewModel(viewDataBinding: WebViewActivityBinding?): WebViewVM {
+        var webViewVM = WebViewVM(bundleData)
+        viewDataBinding?.webViewVM = webViewVM
+        return webViewVM
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.web_view_activity
@@ -54,31 +52,9 @@ class WebViewActivity : BaseLoadActivity<WebViewActivityBinding, WebViewVM>() {
     override fun initData() {
         bundleData?.title?.let { setPageTitle(it) }
         setPageBack(true, false, null)
-        viewModel.webBottomVisible.value = bundleData!!.type == TYPE_LIST
-
-        if (bundleData!!.type == TYPE_LIST) {
-            handlerSeeCount(bundleData)
-            viewModel.getCollectionStatus(bundleData!!.pid, bundleData!!.id)
-
-            viewDataBinding.ivCollection.setOnClickListener {
-                var collectionStatus = viewModel.webCollectionStatus.value
-                viewModel.changeCollectionStatus(bundleData!!.pid, bundleData!!.id, !collectionStatus!!)
-            }
-        }
 
         webSetting()
         viewDataBinding.wevView.loadUrl(bundleData!!.url)
-    }
-
-    private fun handlerSeeCount(bundleData: WebActivityBundleData?) {
-        var generalListBean = GeneralListData()
-        generalListBean.pid = bundleData!!.pid
-        generalListBean.id = bundleData!!.id
-        generalListBean.title = bundleData!!.title
-        generalListBean.content = bundleData!!.content
-        generalListBean.url = bundleData!!.url
-        generalListBean.images = bundleData!!.images
-        viewModel.addSeeCount(generalListBean)
     }
 
     /**

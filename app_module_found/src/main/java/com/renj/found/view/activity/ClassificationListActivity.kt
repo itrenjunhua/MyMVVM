@@ -38,56 +38,42 @@ import com.renj.view.recyclerview.draw.LinearItemDecoration
  */
 @Route(path = ARouterPath.PATH_FOUND_ACTIVITY_CLASSIFICATION_LIST)
 class ClassificationListActivity : BaseLoadActivity<FoundClassificationListActivityBinding, ClassificationListVM>() {
-    override fun createAndBindViewModel(viewDataBinding: FoundClassificationListActivityBinding?): ClassificationListVM {
-        var classificationListVM = ClassificationListVM()
-        viewDataBinding?.classificationListVM = classificationListVM
-        return classificationListVM
-    }
 
     @JvmField
     @Autowired(name = "data")
     var bundleData: Bundle? = null
+
+    override fun createAndBindViewModel(viewDataBinding: FoundClassificationListActivityBinding?): ClassificationListVM {
+        var classificationListVM = ClassificationListVM(bundleData)
+        viewDataBinding?.classificationListVM = classificationListVM
+        return classificationListVM
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.found_classification_list_activity
     }
 
     override fun initData() {
-        setPageBack(true, false, null)
         bundleData?.getString("title", "")?.let { setPageTitle(it) }
+        setPageBack(true, false, null)
 
-        bundleData?.getInt("pid", 0)?.let { viewModel.pid = it }
-
+        // 刷新和加载监听
         viewDataBinding.swipeToLoadLayout.setOnRefreshListener {
-            viewModel.pageNo = 1
-            viewModel.classificationListRequest(
-                LoadingStyle.LOADING_REFRESH,
-                viewModel.pid,
-                viewModel.pageNo,
-                viewModel.pageSize
-            )
+            viewModel.refreshClassificationListData()
         }
         viewDataBinding.swipeToLoadLayout.setOnLoadMoreListener {
-            viewModel.classificationListRequest(
-                LoadingStyle.LOADING_LOAD_MORE,
-                viewModel.pid,
-                viewModel.pageNo,
-                viewModel.pageSize
-            )
+            viewModel.loadMoreClassificationListData()
         }
 
+        // RecyclerView 分割线和管理器
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
         viewDataBinding.swipeTarget.addItemDecoration(LinearItemDecoration(LinearLayoutManager.VERTICAL))
 
-        viewModel.pageNo = 1
-        viewModel.classificationListRequest(
-            LoadingStyle.LOADING_PAGE,
-            viewModel.pid,
-            viewModel.pageNo,
-            viewModel.pageSize
-        )
+        // 加載页面数据
+        viewModel.loadPageClassificationListData()
 
+        // 是否能加载更多监听
         viewModel.loadMore.observe(this, Observer {
             if (it!!) {
                 viewDataBinding.swipeToLoadLayout.isLoadingMore = false
@@ -106,23 +92,11 @@ class ClassificationListActivity : BaseLoadActivity<FoundClassificationListActiv
         viewId: Int
     ) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.pageNo = 1
-            viewModel.classificationListRequest(
-                LoadingStyle.LOADING_PAGE,
-                viewModel.pid,
-                viewModel.pageNo,
-                viewModel.pageSize
-            )
+            viewModel.loadPageClassificationListData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
-            viewModel.pageNo = 1
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            viewModel.classificationListRequest(
-                LoadingStyle.LOADING_PAGE,
-                viewModel.pid,
-                viewModel.pageNo,
-                viewModel.pageSize
-            )
+            viewModel.loadPageClassificationListData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }

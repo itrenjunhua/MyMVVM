@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.renj.common.cell.CommonCellFactory
 import com.renj.common.mode.bean.dp.ListSeeAndCollectionRDB
 import com.renj.common.mode.db.DBHelper
+import com.renj.common.mode.http.utils.CustomSubscriber
 import com.renj.mvvmbase.view.LoadingStyle
 import com.renj.mvvmbase.viewmodel.PageStatusData
 import com.renj.my.view.cell.CellFactory
@@ -13,7 +14,6 @@ import com.renj.rxsupport.utils.RxUtils
 import com.renj.utils.collection.ListUtils
 import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter
 import com.renj.view.recyclerview.adapter.IBindingRecyclerCell
-import io.reactivex.subscribers.ResourceSubscriber
 
 /**
  * ======================================================================
@@ -30,100 +30,92 @@ import io.reactivex.subscribers.ResourceSubscriber
  * ======================================================================
  */
 class SeeAndCollectionListVM : RxLoadViewModel() {
+    private var pageNo = 1
+    private var pageSize = 20
+
     var loadMore = MutableLiveData<Boolean>()
-    var pageNo = 1
-    var pageSize = 20
     var recyclerAdapter = BindingRecyclerAdapter<IBindingRecyclerCell<*, *>>()
 
-    fun listCollectionResponse(@LoadingStyle loadingStyle: Int, pagNo: Int, pageSize: Int) {
+    fun loadPageListCollection() {
+        pageNo = 1
+        listCollectionResponse(LoadingStyle.LOADING_PAGE, pageNo, pageSize)
+    }
+
+    fun refreshListCollection() {
+        pageNo = 1
+        listCollectionResponse(LoadingStyle.LOADING_REFRESH, pageNo, pageSize)
+    }
+
+    fun loadMoreListCollection() {
+        listCollectionResponse(LoadingStyle.LOADING_LOAD_MORE, pageNo, pageSize)
+    }
+
+    private fun listCollectionResponse(@LoadingStyle loadingStyle: Int, pagNo: Int, pageSize: Int) {
         pageStatusData.value = PageStatusData(RPageStatus.LOADING, loadingStyle)
         addDisposable(
             mModelManager.getDBHelper(DBHelper::class.java)
                 .getCollectionList(pagNo, pageSize)
                 .compose(RxUtils.newInstance().threadTransformer())
-                .subscribeWith(object : ResourceSubscriber<ListSeeAndCollectionRDB>() {
-                    override fun onComplete() {
-
-                    }
-
-                    override fun onNext(collectionRDB: ListSeeAndCollectionRDB?) {
+                .subscribeWith(object : CustomSubscriber<ListSeeAndCollectionRDB>(loadingStyle, this) {
+                    override fun onResult(collectionRDB: ListSeeAndCollectionRDB) {
                         if (ListUtils.isEmpty(collectionRDB?.list)) {
                             pageStatusData.value = PageStatusData(RPageStatus.EMPTY, loadingStyle)
                         } else {
                             if (loadingStyle == LoadingStyle.LOADING_REFRESH || loadingStyle == LoadingStyle.LOADING_PAGE)
-                                recyclerAdapter?.setData(
-                                    CellFactory.createSeeAndCollectionListCell(
-                                        collectionRDB?.list,
-                                        false
-                                    ) as List<IBindingRecyclerCell<*, *>>
-                                )
+                                recyclerAdapter?.setData(CellFactory.createSeeAndCollectionListCell(collectionRDB?.list, false) as List<IBindingRecyclerCell<*, *>>)
                             else
-                                recyclerAdapter?.addAndNotifyAll(
-                                    CellFactory.createSeeAndCollectionListCell(
-                                        collectionRDB?.list,
-                                        false
-                                    ) as List<IBindingRecyclerCell<*, *>>
-                                )
+                                recyclerAdapter?.addAndNotifyAll(CellFactory.createSeeAndCollectionListCell(collectionRDB?.list, false) as List<IBindingRecyclerCell<*, *>>)
 
                             if (this@SeeAndCollectionListVM.pageNo >= collectionRDB!!.page)
                                 recyclerAdapter?.addAndNotifyAll(CommonCellFactory.createNoMoreCell() as IBindingRecyclerCell<*, *>)
 
-                            pageStatusData.value = PageStatusData(RPageStatus.CONTENT, loadingStyle)
-
                             this@SeeAndCollectionListVM.pageNo += 1
                         }
-                    }
-
-                    override fun onError(t: Throwable?) {
-                        pageStatusData.value = PageStatusData(RPageStatus.ERROR, loadingStyle, t)
                     }
 
                 })
         )
     }
 
-    fun listSeeResponse(@LoadingStyle loadingStyle: Int, pagNo: Int, pageSize: Int) {
+
+    // ------------------------------  我的查看部分  ------------------------------ //
+
+    fun loadPageListSee() {
+        pageNo = 1
+        listSeeResponse(LoadingStyle.LOADING_PAGE, pageNo, pageSize)
+    }
+
+    fun refreshListSee() {
+        pageNo = 1
+        listSeeResponse(LoadingStyle.LOADING_REFRESH, pageNo, pageSize)
+    }
+
+    fun loadMoreListSee() {
+        listSeeResponse(LoadingStyle.LOADING_LOAD_MORE, pageNo, pageSize)
+    }
+
+    private fun listSeeResponse(@LoadingStyle loadingStyle: Int, pagNo: Int, pageSize: Int) {
         pageStatusData.value = PageStatusData(RPageStatus.LOADING, loadingStyle)
         addDisposable(
             mModelManager.getDBHelper(DBHelper::class.java)
                 .getSeeList(pagNo, pageSize)
                 .compose(RxUtils.newInstance().threadTransformer())
-                .subscribeWith(object : ResourceSubscriber<ListSeeAndCollectionRDB>() {
-                    override fun onComplete() {
-
-                    }
-
-                    override fun onNext(collectionRDB: ListSeeAndCollectionRDB?) {
+                .subscribeWith(object : CustomSubscriber<ListSeeAndCollectionRDB>(loadingStyle, this) {
+                    override fun onResult(collectionRDB: ListSeeAndCollectionRDB) {
                         if (ListUtils.isEmpty(collectionRDB?.list)) {
                             pageStatusData.value = PageStatusData(RPageStatus.EMPTY, loadingStyle)
                         } else {
                             if (loadingStyle == LoadingStyle.LOADING_REFRESH || loadingStyle == LoadingStyle.LOADING_PAGE)
-                                recyclerAdapter?.setData(
-                                    CellFactory.createSeeAndCollectionListCell(
-                                        collectionRDB?.list,
-                                        false
-                                    ) as List<IBindingRecyclerCell<*, *>>
-                                )
+                                recyclerAdapter?.setData(CellFactory.createSeeAndCollectionListCell(collectionRDB?.list, true) as List<IBindingRecyclerCell<*, *>>)
                             else
-                                recyclerAdapter?.addAndNotifyAll(
-                                    CellFactory.createSeeAndCollectionListCell(
-                                        collectionRDB?.list,
-                                        false
-                                    ) as List<IBindingRecyclerCell<*, *>>
-                                )
+                                recyclerAdapter?.addAndNotifyAll(CellFactory.createSeeAndCollectionListCell(collectionRDB?.list, true) as List<IBindingRecyclerCell<*, *>>)
 
                             if (this@SeeAndCollectionListVM.pageNo >= collectionRDB!!.page)
                                 recyclerAdapter?.addAndNotifyAll(CommonCellFactory.createNoMoreCell() as IBindingRecyclerCell<*, *>)
 
-                            pageStatusData.value = PageStatusData(RPageStatus.CONTENT, loadingStyle)
                             this@SeeAndCollectionListVM.pageNo += 1
                         }
                     }
-
-                    override fun onError(t: Throwable?) {
-                        pageStatusData.value = PageStatusData(RPageStatus.ERROR, loadingStyle, t)
-                    }
-
                 })
         )
     }

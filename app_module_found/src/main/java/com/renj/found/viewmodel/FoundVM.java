@@ -8,6 +8,7 @@ import com.renj.found.R;
 import com.renj.found.mode.bean.response.FoundRPB;
 import com.renj.found.mode.http.HttpHelper;
 import com.renj.found.view.cell.CellFactory;
+import com.renj.mvvmbase.view.LoadingStyle;
 import com.renj.mvvmbase.viewmodel.PageStatusData;
 import com.renj.pagestatuscontroller.annotation.RPageStatus;
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel;
@@ -36,7 +37,15 @@ import java.util.List;
 public class FoundVM extends RxLoadViewModel {
     public BindingRecyclerAdapter recyclerAdapter = new BindingRecyclerAdapter();
 
-    public void foundRequest(int loadingStyle) {
+    public void loadPageFundData(){
+        foundRequest(LoadingStyle.LOADING_PAGE);
+    }
+
+    public void refreshFundData(){
+        foundRequest(LoadingStyle.LOADING_REFRESH);
+    }
+
+    private void foundRequest(int loadingStyle) {
         pageStatusData.setValue(new PageStatusData(RPageStatus.LOADING, loadingStyle));
         addDisposable(mModelManager.getHttpHelper(HttpHelper.class)
                 .foundDataRequest()

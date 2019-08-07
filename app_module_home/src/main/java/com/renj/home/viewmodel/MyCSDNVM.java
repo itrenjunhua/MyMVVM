@@ -37,14 +37,30 @@ import java.util.List;
  * ======================================================================
  */
 public class MyCSDNVM extends RxLoadViewModel {
-    public MutableLiveData<Boolean> loadMore = new MutableLiveData();
-    public int pageNo = 1;
-    public int pageSize = 20;
+    private int pageNo = 1;
+    private int pageSize = 20;
 
     private List<IBindingRecyclerCell> cells = new ArrayList<>();
+    public MutableLiveData<Boolean> loadMore = new MutableLiveData();
     public BindingRecyclerAdapter recyclerAdapter = new BindingRecyclerAdapter();
 
-    public void bannerRequest(int loadingStyle) {
+    public void loadPageData() {
+        pageNo = 1;
+        bannerRequest(LoadingStyle.LOADING_PAGE);
+        listRequest(LoadingStyle.LOADING_REFRESH, pageNo, pageSize);
+    }
+
+    public void refreshPageData() {
+        pageNo = 1;
+        bannerRequest(LoadingStyle.LOADING_REFRESH);
+        listRequest(LoadingStyle.LOADING_REFRESH, pageNo, pageSize);
+    }
+
+    public void loadMoreData() {
+        listRequest(LoadingStyle.LOADING_LOAD_MORE, pageNo, pageSize);
+    }
+
+    private void bannerRequest(int loadingStyle) {
         if (loadingStyle == LoadingStyle.LOADING_REFRESH || loadingStyle == LoadingStyle.LOADING_PAGE)
             cells.clear();
 
@@ -64,12 +80,11 @@ public class MyCSDNVM extends RxLoadViewModel {
                             cells.add(CellFactory.createNoticeCell(bannerAndNoticeRPB.data.notices));
                         }
                         recyclerAdapter.setData(cells);
-                        pageStatusData.setValue(new PageStatusData(RPageStatus.CONTENT, loadingStyle, bannerAndNoticeRPB));
                     }
                 }));
     }
 
-    public void listRequest(int loadingStyle, int pageNo, int pageSize) {
+    private void listRequest(int loadingStyle, int pageNo, int pageSize) {
         pageStatusData.setValue(new PageStatusData(RPageStatus.LOADING, loadingStyle));
         addDisposable(mModelManager.getHttpHelper(HttpHelper.class)
                 .myCSDNListRequest(pageNo, pageSize)
@@ -92,7 +107,6 @@ public class MyCSDNVM extends RxLoadViewModel {
                         if (pageNo >= generalListRPB.data.page)
                             recyclerAdapter.addAndNotifyAll(CommonCellFactory.createNoMoreCell());
 
-                        pageStatusData.setValue(new PageStatusData(RPageStatus.CONTENT, loadingStyle, generalListRPB));
                         MyCSDNVM.this.pageNo += 1;
                     }
                 }));

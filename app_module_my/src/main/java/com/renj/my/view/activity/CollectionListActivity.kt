@@ -44,21 +44,24 @@ class CollectionListActivity : BaseLoadActivity<SeeAndCollectionListActivityBind
     override fun initData() {
         setPageBack(true, false, null)
         setPageTitle(R.string.my_collection)
+
+        // 刷新和加载监听
         viewDataBinding.swipeToLoadLayout.setOnRefreshListener {
-            viewModel.pageNo = 1
-            viewModel.listCollectionResponse(LoadingStyle.LOADING_REFRESH, viewModel.pageNo, viewModel.pageSize)
+            viewModel.refreshListCollection()
         }
         viewDataBinding.swipeToLoadLayout.setOnLoadMoreListener {
-            viewModel.listCollectionResponse(LoadingStyle.LOADING_LOAD_MORE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadMoreListCollection()
         }
 
+        // RecyclerView 分割线和管理器
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
         viewDataBinding.swipeTarget.addItemDecoration(LinearItemDecoration(LinearLayoutManager.VERTICAL))
 
-        viewModel.pageNo = 1
-        viewModel.listCollectionResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+        // 加載页面数据
+        viewModel.loadPageListCollection()
 
+        // 是否能加载更多监听
         viewModel.loadMore.observe(this, Observer {
             if (it!!) {
                 viewDataBinding.swipeToLoadLayout.isLoadingMore = false
@@ -86,17 +89,14 @@ class CollectionListActivity : BaseLoadActivity<SeeAndCollectionListActivityBind
         viewId: Int
     ) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.pageNo = 1
-            viewModel.listCollectionResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadPageListCollection()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
-            viewModel.pageNo = 1
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            viewModel.listCollectionResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadPageListCollection()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }
-
     }
 
     override fun showCustomResultPage(status: Int, loadingStyle: Int, `object`: Any?) {

@@ -59,6 +59,7 @@
                     android:id="@+id/iv_collection"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
+                    android:onClick="@{() -> webViewVM.changeCollectionStatus()}"
                     android:background="@{webViewVM.webCollectionStatus ? R.mipmap.web_collection_s : R.mipmap.web_collection_n}"/>
 
         </LinearLayout>

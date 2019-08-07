@@ -35,7 +35,7 @@ import com.renj.view.recyclerview.draw.LinearItemDecoration
  * ======================================================================
  */
 @Route(path = ARouterPath.PATH_HOME_FRAGMENT_MY_GITHUB)
-class MyGitHubFragment : BaseLoadFragment<MyGithubFragmentBinding, MyGitHubVM>(){
+class MyGitHubFragment : BaseLoadFragment<MyGithubFragmentBinding, MyGitHubVM>() {
     override fun createAndBindViewModel(viewDataBinding: MyGithubFragmentBinding?): MyGitHubVM {
         var myGitHubVM = MyGitHubVM()
         viewDataBinding?.githubViewModel = myGitHubVM
@@ -47,23 +47,23 @@ class MyGitHubFragment : BaseLoadFragment<MyGithubFragmentBinding, MyGitHubVM>()
     }
 
     override fun initData() {
+        // 刷新和加载监听
         viewDataBinding.swipeToLoadLayout.setOnRefreshListener {
-            viewModel.pageNo = 1
-            requestBannerData(LoadingStyle.LOADING_REFRESH)
-            requestListData(LoadingStyle.LOADING_REFRESH)
+            viewModel.refreshPageData()
         }
         viewDataBinding.swipeToLoadLayout.setOnLoadMoreListener {
-            requestListData(LoadingStyle.LOADING_LOAD_MORE)
+            viewModel.loadMoreData()
         }
 
+        // RecyclerView 分割线和管理器
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
         viewDataBinding.swipeTarget.addItemDecoration(LinearItemDecoration(LinearLayoutManager.VERTICAL))
 
-        viewModel.pageNo = 1
-        requestBannerData(LoadingStyle.LOADING_PAGE)
-        requestListData(LoadingStyle.LOADING_REFRESH)
+        // 加載页面数据
+        viewModel.loadPageData()
 
+        // 是否能加载更多监听
         viewModel.loadMore.observe(this, Observer {
             if (it!!) {
                 viewDataBinding.swipeToLoadLayout.isLoadingMore = false
@@ -72,14 +72,6 @@ class MyGitHubFragment : BaseLoadFragment<MyGithubFragmentBinding, MyGitHubVM>()
                 viewDataBinding.swipeToLoadLayout.isLoadMoreEnabled = true
             }
         })
-    }
-
-    private fun requestBannerData(loadingStyle: Int) {
-        viewModel.bannerRequest(loadingStyle)
-    }
-
-    private fun requestListData(loadingStyle: Int) {
-        viewModel.listRequest(loadingStyle, viewModel.pageNo, viewModel.pageSize)
     }
 
     /**
@@ -91,17 +83,19 @@ class MyGitHubFragment : BaseLoadFragment<MyGithubFragmentBinding, MyGitHubVM>()
      * @param view                   点击事件产生的 View
      * @param viewId                 点击事件产生的 View 的 id
      */
-    override fun handlerPageLoadException(iRPageStatusController: IRPageStatusController<*>, pageStatus: Int, `object`: Any, view: View, viewId: Int) {
+    override fun handlerPageLoadException(
+        iRPageStatusController: IRPageStatusController<*>,
+        pageStatus: Int,
+        `object`: Any,
+        view: View,
+        viewId: Int
+    ) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.pageNo = 1
-            requestBannerData(LoadingStyle.LOADING_PAGE)
-            requestListData(LoadingStyle.LOADING_REFRESH)
+            viewModel.loadPageData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
-            viewModel.pageNo = 1
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            requestBannerData(LoadingStyle.LOADING_PAGE)
-            requestListData(LoadingStyle.LOADING_REFRESH)
+            viewModel.loadPageData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }

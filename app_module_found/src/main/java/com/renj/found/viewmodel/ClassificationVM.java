@@ -8,6 +8,7 @@ import com.renj.found.mode.bean.response.ClassificationRPB;
 import com.renj.found.mode.http.HttpHelper;
 import com.renj.found.view.cell.CellFactory;
 import com.renj.found.view.cell.ClassificationCell;
+import com.renj.mvvmbase.view.LoadingStyle;
 import com.renj.mvvmbase.viewmodel.PageStatusData;
 import com.renj.pagestatuscontroller.annotation.RPageStatus;
 import com.renj.rxsupport.rxviewmodel.RxLoadViewModel;
@@ -32,7 +33,15 @@ import com.renj.view.recyclerview.adapter.BindingRecyclerAdapter;
 public class ClassificationVM extends RxLoadViewModel {
     public BindingRecyclerAdapter<ClassificationCell> recyclerAdapter = new BindingRecyclerAdapter<>();
 
-    public void classificationRequest(int loadingStyle) {
+    public void loadClassificationPageData(){
+        classificationRequest(LoadingStyle.LOADING_PAGE);
+    }
+
+    public void refreshClassificationPageData(){
+        classificationRequest(LoadingStyle.LOADING_REFRESH);
+    }
+
+    private void classificationRequest(int loadingStyle) {
         pageStatusData.setValue(new PageStatusData(RPageStatus.LOADING, loadingStyle));
         addDisposable(mModelManager.getHttpHelper(HttpHelper.class)
                 .classificationDataRequest()
@@ -48,7 +57,6 @@ public class ClassificationVM extends RxLoadViewModel {
                     @Override
                     public void onResult(@NonNull ClassificationRPB classificationRPB) {
                         recyclerAdapter.setData(CellFactory.createClassificationCell(classificationRPB.data));
-                        pageStatusData.setValue(new PageStatusData(RPageStatus.CONTENT, loadingStyle, classificationRPB));
                     }
                 }));
     }

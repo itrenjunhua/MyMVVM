@@ -9,7 +9,6 @@ import com.renj.found.R
 import com.renj.found.databinding.FoundFragmentBinding
 import com.renj.found.viewmodel.FoundVM
 import com.renj.mvvmbase.view.BaseLoadFragment
-import com.renj.mvvmbase.view.LoadingStyle
 import com.renj.pagestatuscontroller.IRPageStatusController
 import com.renj.pagestatuscontroller.annotation.RPageStatus
 import com.renj.utils.net.NetWorkUtils
@@ -46,29 +45,22 @@ class FoundFragment : BaseLoadFragment<FoundFragmentBinding, FoundVM>() {
     }
 
     override fun initData() {
-        initSwipeToLoadLayout()
-        initRecyclerView()
+        viewDataBinding.swipeToLoadLayout.setOnRefreshListener { viewModel.refreshFundData() }
 
-        viewModel.foundRequest(LoadingStyle.LOADING_PAGE)
-    }
-
-    private fun initSwipeToLoadLayout() {
-        viewDataBinding.swipeToLoadLayout.setOnRefreshListener { viewModel.foundRequest(LoadingStyle.LOADING_REFRESH) }
-    }
-
-    private fun initRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
         viewDataBinding.swipeTarget.addItemDecoration(DividerItemDecoration(context!!, LinearLayoutManager.VERTICAL))
+
+        viewModel.loadPageFundData()
     }
 
     override fun handlerPageLoadException(iRPageStatusController: IRPageStatusController<*>, pageStatus: Int, `object`: Any, view: View, viewId: Int) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.foundRequest(LoadingStyle.LOADING_PAGE)
+            viewModel.loadPageFundData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            viewModel.foundRequest(LoadingStyle.LOADING_PAGE)
+            viewModel.loadPageFundData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }
@@ -77,5 +69,4 @@ class FoundFragment : BaseLoadFragment<FoundFragmentBinding, FoundVM>() {
     override fun showCustomResultPage(status: Int, loadingStyle: Int, `object`: Any?) {
         viewDataBinding.swipeToLoadLayout.isRefreshing = false
     }
-
 }

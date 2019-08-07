@@ -45,21 +45,24 @@ class SeeListActivity : BaseLoadActivity<SeeAndCollectionListActivityBinding, Se
     override fun initData() {
         setPageBack(true, false, null)
         setPageTitle(R.string.my_see)
+
+        // 刷新和加载监听
         swipe_toLoad_layout.setOnRefreshListener {
-            viewModel.pageNo = 1
-            viewModel.listSeeResponse(LoadingStyle.LOADING_REFRESH, viewModel.pageNo, viewModel.pageSize)
+            viewModel.refreshListSee()
         }
         swipe_toLoad_layout.setOnLoadMoreListener {
-            viewModel.listSeeResponse(LoadingStyle.LOADING_LOAD_MORE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadMoreListSee()
         }
 
+        // RecyclerView 分割线和管理器
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         swipe_target.layoutManager = linearLayoutManager
         swipe_target.addItemDecoration(LinearItemDecoration(LinearLayoutManager.VERTICAL))
 
-        viewModel.pageNo = 1
-        viewModel.listSeeResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+        // 加載页面数据
+        viewModel.loadPageListSee()
 
+        // 是否能加载更多监听
         viewModel.loadMore.observe(this, Observer {
             if (it!!) {
                 viewDataBinding.swipeToLoadLayout.isLoadingMore = false
@@ -87,13 +90,11 @@ class SeeListActivity : BaseLoadActivity<SeeAndCollectionListActivityBinding, Se
         viewId: Int
     ) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.pageNo = 1
-            viewModel.listSeeResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadPageListSee()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
-            viewModel.pageNo = 1
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            viewModel.listSeeResponse(LoadingStyle.LOADING_PAGE, viewModel.pageNo, viewModel.pageSize)
+            viewModel.loadPageListSee()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }

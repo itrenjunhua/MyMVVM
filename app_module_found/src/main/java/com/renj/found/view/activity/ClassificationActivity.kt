@@ -9,7 +9,6 @@ import com.renj.found.R
 import com.renj.found.databinding.FoundClassificationActivityBinding
 import com.renj.found.viewmodel.ClassificationVM
 import com.renj.mvvmbase.view.BaseLoadActivity
-import com.renj.mvvmbase.view.LoadingStyle
 import com.renj.pagestatuscontroller.IRPageStatusController
 import com.renj.pagestatuscontroller.annotation.RPageStatus
 import com.renj.utils.net.NetWorkUtils
@@ -48,20 +47,14 @@ class ClassificationActivity : BaseLoadActivity<FoundClassificationActivityBindi
     override fun initData() {
         setPageTitle(R.string.title_classification)
         setPageBack(true, false, null)
-        initSwipeToLoadLayout()
-        initRecyclerView()
 
-        viewModel.classificationRequest(LoadingStyle.LOADING_PAGE)
-    }
+        viewDataBinding.swipeToLoadLayout.setOnRefreshListener { viewModel.refreshClassificationPageData() }
 
-    private fun initSwipeToLoadLayout() {
-        viewDataBinding.swipeToLoadLayout.setOnRefreshListener { viewModel.classificationRequest(LoadingStyle.LOADING_REFRESH) }
-    }
-
-    private fun initRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         viewDataBinding.swipeTarget.layoutManager = linearLayoutManager
         viewDataBinding.swipeTarget.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+
+        viewModel.loadClassificationPageData()
     }
 
     override fun handlerPageLoadException(
@@ -72,11 +65,11 @@ class ClassificationActivity : BaseLoadActivity<FoundClassificationActivityBindi
         viewId: Int
     ) {
         if (pageStatus == RPageStatus.ERROR && viewId == R.id.tv_error) {
-            viewModel.classificationRequest(LoadingStyle.LOADING_PAGE)
+            viewModel.loadClassificationPageData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_reload) {
             // 此处修改页面状态是因为在 BaseApplication 中指定了当网络异常时点击不自动修改为 loading 状态
             rPageStatusController.changePageStatus(RPageStatus.LOADING)
-            viewModel.classificationRequest(LoadingStyle.LOADING_PAGE)
+            viewModel.loadClassificationPageData()
         } else if (pageStatus == RPageStatus.NET_WORK && viewId == R.id.tv_net_work) {
             NetWorkUtils.openNetWorkActivity()
         }
