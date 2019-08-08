@@ -13,10 +13,10 @@
             <option value="$PROJECT_DIR$/app_module_found" />
             <option value="$PROJECT_DIR$/app_module_home" />
             <option value="$PROJECT_DIR$/app_module_my" />
-            <option value="$PROJECT_DIR$/binding_custom" />
             <option value="$PROJECT_DIR$/lib_android_cache" />
             <option value="$PROJECT_DIR$/lib_android_utils" />
             <option value="$PROJECT_DIR$/lib_android_view" />
+            <option value="$PROJECT_DIR$/lib_custom_binding" />
             <option value="$PROJECT_DIR$/lib_http" />
             <option value="$PROJECT_DIR$/lib_imageloader_glide" />
             <option value="$PROJECT_DIR$/lib_imageloader_interface" />

@@ -1,4 +1,5 @@
-include ':app', ':mvvm_mvvmbase', ':mvvm_rxsupport', ':app_lib_common', ':app_module_home',  ':app_module_found', ':app_module_my', ':binding_custom'
-include ':lib_android_utils', ':lib_android_view', ':lib_loading_dialog'
+include ':app',  ':app_module_home',  ':app_module_found', ':app_module_my'
+include ':mvvm_mvvmbase', ':mvvm_rxsupport', ':app_lib_common'
+include ':lib_android_utils', ':lib_android_view', ':lib_custom_binding',':lib_loading_dialog'
 include ':lib_http', ':lib_imageloader_interface', ':lib_imageloader_glide'
 include ':lib_rpagestatuscontroller', ':lib_android_cache'

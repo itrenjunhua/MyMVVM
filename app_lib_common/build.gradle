@@ -17,7 +17,7 @@ dependencies {
 
     api project(':mvvm_mvvmbase')
     api project(':mvvm_rxsupport')
-    api project(':binding_custom')
+    api project(':lib_custom_binding')
     api project(':lib_http')
     api project(':lib_android_utils')
     api project(':lib_android_view')
